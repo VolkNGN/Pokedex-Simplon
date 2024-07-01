@@ -20,16 +20,17 @@ header {
     text-align: center;
 }
 
-/* Styles pour le conteneur de recherche */
-#search-container {
-    width: 100%;
-    background-color: #e3f2fd;
+/* Card Layout */
+.card {
+    background-color: #ffffff;
     padding: 20px;
-    margin-bottom: 20px;
+    margin: 20px 0;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
 }
 
+/* Styles pour le conteneur de recherche */
 #search-container h2 {
     margin-top: 0;
 }
@@ -47,12 +48,18 @@ header {
 #search-form label {
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;
 }
 
 #search-form select, #search-form input {
     padding: 5px;
     width: 200px;
     margin: 0 10px;
+}
+
+.inline-field {
+    display: flex;
+    align-items: center;
 }
 
 #search-form .button-group {

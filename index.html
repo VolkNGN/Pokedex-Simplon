@@ -63,28 +63,30 @@
                     <label for="search-height-comparator">Taille</label>
                     <select id="search-height-comparator">
                         <option value="at-least">Au moins</option>
-                        <option value="equal">Égal à</option>
+                        <option value="equal">Égal</option>
                         <option value="at-most">Au plus</option>
                     </select>
-                    <input type="number" id="search-height" min="0" placeholder="Taille (m)">
+                    <input type="number" id="search-height" placeholder="Taille (m)">
                 </div>
                 <div>
                     <label for="search-weight-comparator">Poids</label>
                     <select id="search-weight-comparator">
                         <option value="at-least">Au moins</option>
-                        <option value="equal">Égal à</option>
+                        <option value="equal">Égal</option>
                         <option value="at-most">Au plus</option>
                     </select>
-                    <input type="number" id="search-weight" min="0" placeholder="Poids (kg)">
+                    <input type="number" id="search-weight" placeholder="Poids (kg)">
                 </div>
-                <div class="button-group">
+                <div class="buttons-container">
                     <button type="submit">Rechercher</button>
                     <button type="button" id="reset-button">Réinitialiser</button>
                 </div>
             </form>
         </div>
+        <!-- Conteneur des critères sélectionnés -->
         <div id="selected-criteria"></div>
-        <div id="no-results-message" style="display:none">Aucun résultat trouvé pour votre recherche.</div>
+        <!-- Message aucun résultat -->
+        <div id="no-results-message" style="display:none;">Aucun résultat trouvé pour votre recherche.</div>
         <!-- Conteneur des cartes Pokémon -->
         <div id="pokedex" class="pokedex"></div>
     </div>
