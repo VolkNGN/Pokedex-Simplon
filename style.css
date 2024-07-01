@@ -2,12 +2,12 @@
 header {
     width: 100%;
     text-align: center;
-    background-color: #fff; /* Optionnel : ajoutez une couleur de fond */
+    background-color: #ffffff; /* Optionnel : ajoutez une couleur de fond */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optionnel : ajoutez une ombre */
 }
 
 #header-image {
-    max-width: 100%;
+    max-width: 50%;
     height: auto;
     margin: 20px 0;
 }
@@ -28,6 +28,7 @@ header {
     margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: center;
 }
 
 #search-container h2 {
