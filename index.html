@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Image du Pokédex en tant que header -->
+    <header>
+        <img src="images/image.png" alt="Pokédex" id="header-image">
+    </header>
+    <!-- Conteneur principal de l'application -->
+    <div id="app">
+        <!-- Formulaire de recherche -->
+        <div id="search-container">
+            <h2>Recherche avancée</h2>
+            <form id="search-form">
+                <div>
+                    <label for="search-type">Types</label>
+                    <select id="search-type">
+                        <option value="">Un de ces types</option>
+                        <option value="normal">Normal</option>
+                        <option value="fighting">Combat</option>
+                        <option value="flying">Vol</option>
+                        <option value="poison">Poison</option>
+                        <option value="ground">Sol</option>
+                        <option value="rock">Roche</option>
+                        <option value="bug">Insecte</option>
+                        <option value="ghost">Spectre</option>
+                        <option value="steel">Acier</option>
+                        <option value="fire">Feu</option>
+                        <option value="water">Eau</option>
+                        <option value="grass">Plante</option>
+                        <option value="electric">Électrik</option>
+                        <option value="psychic">Psy</option>
+                        <option value="ice">Glace</option>
+                        <option value="dragon">Dragon</option>
+                        <option value="dark">Ténèbres</option>
+                        <option value="fairy">Fée</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="search-number">Numéro du Pokédex</label>
+                    <input type="number" id="search-number" min="1" max="150" placeholder="1 à 150">
+                </div>
+                <button type="submit">Rechercher</button>
+            </form>
+        </div>
+        <!-- Conteneur des cartes Pokémon -->
+        <div id="pokedex" class="pokedex"></div>
+    </div>
+    <!-- Modale pour les détails du Pokémon -->
+    <div id="pokemon-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="modal-body">
+                <div class="sidebar">
+                    <ul>
+                        <li><a href="#" onclick="openTab(event, 'Informations')">Informations</a></li>
+                        <li><a href="#" onclick="openTab(event, 'Formes')">Formes</a></li>
+                        <li><a href="#" onclick="openTab(event, 'Evolutions')">Évolutions et reproduction</a></li>
+                        <li><a href="#" onclick="openTab(event, 'Localisations')">Localisations</a></li>
+                        <li><a href="#" onclick="openTab(event, 'Statistiques')">Statistiques</a></li>
+                        <li><a href="#" onclick="openTab(event, 'Attaques')">Attaques</a></li>
+                        <li><a href="#" onclick="openTab(event, 'Descriptions')">Descriptions</a></li>
+                    </ul>
+                </div>
+                <div class="tabcontent" id="Informations"></div>
+                <div class="tabcontent" id="Formes" style="display:none"></div>
+                <div class="tabcontent" id="Evolutions" style="display:none"></div>
+                <div class="tabcontent" id="Localisations" style="display:none"></div>
+                <div class="tabcontent" id="Statistiques" style="display:none"></div>
+                <div class="tabcontent" id="Attaques" style="display:none"></div>
+                <div class="tabcontent" id="Descriptions" style="display:none"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
