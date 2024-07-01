@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedex</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+    <!-- Swiper JS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 </head>
 <body>
     <!-- Image du Pokédex en tant que header -->
@@ -34,8 +34,7 @@
                 </div>
                 <div>
                     <label for="search-type">Types</label>
-                    <select id="search-type">
-                        <option value="">Un de ces types</option>
+                    <select id="search-type" multiple>
                         <option value="normal">Normal</option>
                         <option value="fighting">Combat</option>
                         <option value="flying">Vol</option>
@@ -60,9 +59,32 @@
                     <label for="search-number">Numéro du Pokédex</label>
                     <input type="number" id="search-number" min="1" placeholder="Numéro du Pokédex">
                 </div>
-                <button type="submit">Rechercher</button>
+                <div>
+                    <label for="search-height-comparator">Taille</label>
+                    <select id="search-height-comparator">
+                        <option value="at-least">Au moins</option>
+                        <option value="equal">Égal à</option>
+                        <option value="at-most">Au plus</option>
+                    </select>
+                    <input type="number" id="search-height" min="0" placeholder="Taille (m)">
+                </div>
+                <div>
+                    <label for="search-weight-comparator">Poids</label>
+                    <select id="search-weight-comparator">
+                        <option value="at-least">Au moins</option>
+                        <option value="equal">Égal à</option>
+                        <option value="at-most">Au plus</option>
+                    </select>
+                    <input type="number" id="search-weight" min="0" placeholder="Poids (kg)">
+                </div>
+                <div class="button-group">
+                    <button type="submit">Rechercher</button>
+                    <button type="button" id="reset-button">Réinitialiser</button>
+                </div>
             </form>
         </div>
+        <div id="selected-criteria"></div>
+        <div id="no-results-message" style="display:none">Aucun résultat trouvé pour votre recherche.</div>
         <!-- Conteneur des cartes Pokémon -->
         <div id="pokedex" class="pokedex"></div>
     </div>
@@ -93,7 +115,7 @@
         </div>
     </div>
     <script src="script.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <!-- Swiper JS -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </body>
 </html>

@@ -2,12 +2,12 @@
 header {
     width: 100%;
     text-align: center;
-    background-color: #ffffff; /* Optionnel : ajoutez une couleur de fond */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optionnel : ajoutez une ombre */
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 #header-image {
-    max-width: 50%;
+    max-width: 100%;
     height: auto;
     margin: 20px 0;
 }
@@ -28,7 +28,6 @@ header {
     margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    display: center;
 }
 
 #search-container h2 {
@@ -50,14 +49,16 @@ header {
     margin-bottom: 5px;
 }
 
-#search-form select {
+#search-form select, #search-form input {
     padding: 5px;
     width: 200px;
+    margin: 0 10px;
 }
 
-#search-form input {
-    padding: 5px;
-    width: 200px;
+#search-form .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 #search-form button {
@@ -71,6 +72,17 @@ header {
 
 #search-form button:hover {
     background-color: #45a049;
+}
+
+#selected-criteria {
+    margin-top: 20px;
+    text-align: left;
+}
+
+#no-results-message {
+    margin-top: 20px;
+    color: red;
+    font-weight: bold;
 }
 
 /* Styles pour le conteneur des cartes Pokémon */
@@ -128,25 +140,25 @@ header {
 
 /* Styles pour la modale */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
     padding-top: 60px;
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 5% auto; /* 15% from the top and centered */
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 80%;
     border-radius: 10px;
     position: relative;
     display: flex;
@@ -171,7 +183,7 @@ header {
 /* Styles pour la modale - menu de navigation */
 .modal-body {
     display: flex;
-    width: 100%; /* Ensure the modal body takes the full width */
+    width: 100%;
 }
 
 .sidebar {
@@ -205,9 +217,9 @@ header {
     display: none;
     width: 80%;
     padding: 20px;
-    animation: fadeEffect 1s; /* Fading effect takes 1 second */
-    margin: 0 auto; /* Center horizontally */
-    text-align: center; /* Center text inside the content */
+    animation: fadeEffect 1s;
+    margin: 0 auto;
+    text-align: center;
 }
 
 @keyframes fadeEffect {
@@ -215,15 +227,13 @@ header {
     to {opacity: 1;}
 }
 
-/* Styles pour les images des évolutions */
+.tabcontent h3 {
+    margin-top: 0;
+}
+
 .evolution-chain img {
     width: 50px;
     height: 50px;
     vertical-align: middle;
     margin-right: 10px;
-}
-
-/* Ensure the tabs are aligned */
-.tabcontent h3 {
-    margin-top: 0;
 }

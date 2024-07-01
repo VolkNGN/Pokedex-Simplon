@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchType = document.getElementById('search-type');
     const searchNumber = document.getElementById('search-number');
     const searchGeneration = document.getElementById('search-generation');
+    const searchHeightComparator = document.getElementById('search-height-comparator');
+    const searchHeight = document.getElementById('search-height');
+    const searchWeightComparator = document.getElementById('search-weight-comparator');
+    const searchWeight = document.getElementById('search-weight');
+    const selectedCriteria = document.getElementById('selected-criteria');
+    const noResultsMessage = document.getElementById('no-results-message');
+    const resetButton = document.getElementById('reset-button');
     const modal = document.getElementById("pokemon-modal");
     const closeButton = document.querySelector(".close-button");
     let currentOffset = 0;
@@ -11,7 +18,27 @@ document.addEventListener("DOMContentLoaded", () => {
     let allPokemonData = [];
     const displayedPokemonIds = new Set();
 
-    // Dictionnaire des types de Pokémon en anglais vers français
+    const typeColors = {
+        normal: '#A8A77A',
+        fire: '#EE8130',
+        water: '#6390F0',
+        electric: '#F7D02C',
+        grass: '#7AC74C',
+        ice: '#96D9D6',
+        fighting: '#C22E28',
+        poison: '#A33EA1',
+        ground: '#E2BF65',
+        flying: '#A98FF3',
+        psychic: '#F95587',
+        bug: '#A6B91A',
+        rock: '#B6A136',
+        ghost: '#735797',
+        dragon: '#6F35FC',
+        dark: '#705746',
+        steel: '#B7B7CE',
+        fairy: '#D685AD'
+    };
+
     const typeTranslation = {
         normal: 'Normal',
         fighting: 'Combat',
@@ -33,10 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
         fairy: 'Fée'
     };
 
-    // Initialement, cacher la div pokedex
     pokedex.style.display = 'none';
 
-    // Fonction pour récupérer les données des Pokémon d'une génération depuis l'API
     async function fetchPokemonDataByGeneration(generationId) {
         try {
             const response = await fetch(`https://pokeapi.co/api/v2/generation/${generationId}`);
@@ -52,39 +77,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Fonction pour récupérer les données des Pokémon par lots
-    async function fetchPokemonData(offset, limit) {
-        try {
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
-            const data = await response.json();
-            const allPokemon = await Promise.all(data.results.map(async (pokemon) => {
-                const pokemonResponse = await fetch(pokemon.url);
-                return await pokemonResponse.json();
-            }));
-            return allPokemon;
-        } catch (error) {
-            console.error('Erreur lors de la récupération des données Pokémon:', error);
-        }
-    }
-
-    // Fonction pour trier les Pokémon par numéro
     function sortPokemonByNumber(pokemons) {
         return pokemons.sort((a, b) => a.id - b.id);
     }
 
-    // Fonction pour afficher les Pokémon dans le pokédex
     async function displayPokemon(pokemons, reset = false) {
         if (reset) {
-            pokedex.innerHTML = ''; // Vider le pokédex avant d'ajouter de nouvelles cartes
-            displayedPokemonIds.clear(); // Vider le set des IDs affichés
+            pokedex.innerHTML = '';
+            displayedPokemonIds.clear();
         }
 
-        // Trier les Pokémon par numéro
         pokemons = sortPokemonByNumber(pokemons);
 
         for (const pokemon of pokemons) {
             if (displayedPokemonIds.has(pokemon.id)) {
-                continue; // Ignorer les Pokémon déjà affichés
+                continue;
             }
             displayedPokemonIds.add(pokemon.id);
 
@@ -96,6 +103,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const pokemonCard = document.createElement('div');
             pokemonCard.classList.add('pokemon-card');
             pokemonCard.dataset.pokemonId = pokemon.id;
+
+            const primaryTypeColor = typeColors[pokemon.types[0].type.name];
+            const secondaryTypeColor = pokemon.types[1] ? typeColors[pokemon.types[1].type.name] : null;
+
+            pokemonCard.style.background = secondaryTypeColor ?
+                `linear-gradient(45deg, ${primaryTypeColor} 50%, ${secondaryTypeColor} 50%)` :
+                primaryTypeColor;
 
             pokemonCard.innerHTML = `
                 <div class="pokemon-number">#${pokemon.id}</div>
@@ -112,14 +126,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             pokedex.appendChild(pokemonCard);
 
-            // Ajouter un événement de clic pour afficher les détails du Pokémon
             pokemonCard.addEventListener('click', () => {
                 showPokemonDetails(pokemon, nameInFrench);
             });
         }
     }
 
-    // Fonction pour afficher les détails du Pokémon dans la modale
     async function showPokemonDetails(pokemon, nameInFrench) {
         try {
             const speciesResponse = await fetch(pokemon.species.url);
@@ -169,13 +181,12 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
 
             modal.style.display = "block";
-            openTab(null, 'Informations'); // Afficher l'onglet 'Informations' par défaut
+            openTab(null, 'Informations');
         } catch (error) {
             console.error('Erreur lors de l\'affichage des détails du Pokémon:', error);
         }
     }
 
-    // Fonction pour afficher les localisations du Pokémon
     async function showPokemonLocations(pokemon) {
         const locationResponse = await fetch(pokemon.location_area_encounters);
         const locations = await locationResponse.json();
@@ -190,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
-    // Fonction pour afficher la chaîne d'évolution avec images
     async function renderEvolutionChain(chain) {
         if (!chain) return "<p>Aucune information d'évolution disponible.</p>";
 
@@ -207,107 +217,104 @@ document.addEventListener("DOMContentLoaded", () => {
             const speciesResponse = await fetch(pokemonData.species.url);
             const speciesData = await speciesResponse.json();
             const nameInFrench = speciesData.names.find(name => name.language.name === 'fr')?.name || pokemonName;
-            
+
             evolutionHTML += `
                 <div>
                     <img src="${pokemonImage}" alt="${nameInFrench}">
                     <p>${nameInFrench}${minLevel}${trigger}${item}</p>
                 </div>
             `;
-            console.log('Current Evolution:', pokemonName); // Debugging line
             currentChain = currentChain.evolves_to.length > 0 ? currentChain.evolves_to[0] : null;
         } while (currentChain);
 
         return evolutionHTML;
     }
 
-    // Fonction pour afficher les attaques en français
     async function renderAttacks(moves) {
         const attackNames = await Promise.all(moves.map(async (move) => {
             const moveResponse = await fetch(move.move.url);
             const moveData = await moveResponse.json();
             const nameInFrench = moveData.names.find(name => name.language.name === 'fr')?.name;
-            if (!nameInFrench) {
-                console.log(`Nom français introuvable pour l'attaque: ${move.move.name}`);
-            }
             return nameInFrench ? `<li>${nameInFrench}</li>` : '';
         }));
         return attackNames.join('');
     }
 
-    // Fonction pour filtrer les Pokémon en fonction des critères de recherche
-    function filterPokemon(pokemons, type, number) {
+    function filterPokemon(pokemons, type, number, heightComparator, height, weightComparator, weight) {
         if (!pokemons) return [];
         return pokemons.filter(pokemon => {
-            const matchesType = type === '' || pokemon.types.some(p => p.type.name === type);
+            const matchesType = type.length === 0 || pokemon.types.some(p => type.includes(p.type.name));
             const matchesNumber = number === '' || pokemon.id == number;
-            return matchesType && matchesNumber;
+            const matchesHeight = height === '' || (heightComparator === 'at-least' && pokemon.height / 10 >= height) ||
+                (heightComparator === 'at-most' && pokemon.height / 10 <= height) || (heightComparator === 'equal' && pokemon.height / 10 == height);
+            const matchesWeight = weight === '' || (weightComparator === 'at-least' && pokemon.weight / 10 >= weight) ||
+                (weightComparator === 'at-most' && pokemon.weight / 10 <= weight) || (weightComparator === 'equal' && pokemon.weight / 10 == weight);
+            return matchesType && matchesNumber && matchesHeight && matchesWeight;
         });
     }
 
-    // Gestion de l'événement de soumission du formulaire de recherche
     searchForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const generationId = searchGeneration.value;
-        const type = searchType.value;
+        const type = Array.from(searchType.selectedOptions).map(option => option.value);
         const number = searchNumber.value;
+        const heightComparator = searchHeightComparator.value;
+        const height = searchHeight.value;
+        const weightComparator = searchWeightComparator.value;
+        const weight = searchWeight.value;
 
-        // Cacher le pokedex si aucune génération n'est sélectionnée
+        selectedCriteria.innerHTML = `
+            <p>Génération: ${generationId}</p>
+            <p>Types: ${type.join(', ')}</p>
+            <p>Numéro du Pokédex: ${number}</p>
+            <p>Taille: ${heightComparator} ${height} m</p>
+            <p>Poids: ${weightComparator} ${weight} kg</p>
+        `;
+
         if (!generationId) {
             pokedex.style.display = 'none';
             return;
         }
 
         fetchPokemonDataByGeneration(generationId).then(allPokemon => {
-            const filteredPokemon = filterPokemon(allPokemon, type, number);
-            allPokemonData = filteredPokemon; // Mettre à jour les données Pokémon filtrées
-            displayPokemon(filteredPokemon, true); // Passer true pour indiquer une réinitialisation
-            pokedex.style.display = 'flex'; // Afficher le pokedex si des Pokémon sont trouvés
+            const filteredPokemon = filterPokemon(allPokemon, type, number, heightComparator, height, weightComparator, weight);
+            allPokemonData = filteredPokemon;
+            displayPokemon(filteredPokemon, true);
+            pokedex.style.display = filteredPokemon.length ? 'flex' : 'none';
+            noResultsMessage.style.display = filteredPokemon.length ? 'none' : 'block';
         });
     });
 
-    // Appel initial pour récupérer et afficher les Pokémon par lots (si nécessaire)
-    function loadMorePokemon() {
-        fetchPokemonData(currentOffset, limit).then(allPokemon => {
-            allPokemonData = [...allPokemonData, ...allPokemon]; // Ajouter de nouveaux Pokémon aux données existantes
-            displayPokemon(allPokemonData); // Ne pas passer true ici pour éviter la réinitialisation
-            currentOffset += limit;
-        });
+    resetButton.addEventListener('click', () => {
+        searchForm.reset();
+        pokedex.style.display = 'none';
+        selectedCriteria.innerHTML = '';
+        noResultsMessage.style.display = 'none';
+    });
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.querySelectorAll(".sidebar ul li a");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        if (evt) {
+            evt.currentTarget.className += " active";
+        }
     }
 
-    // Event listener for infinite scroll (si nécessaire)
-    window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-            loadMorePokemon();
-        }
-    });
-
-    // Fermer la modale lorsque l'utilisateur clique sur le bouton de fermeture
     closeButton.addEventListener('click', () => {
         modal.style.display = "none";
     });
 
-    // Fermer la modale lorsque l'utilisateur clique en dehors de la modale
     window.addEventListener('click', (event) => {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     });
 });
-
-// Fonction pour gérer la navigation entre les onglets
-function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.querySelectorAll(".sidebar ul li a");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    if (evt) {
-        evt.currentTarget.className += " active";
-    }
-}
