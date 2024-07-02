@@ -1,4 +1,23 @@
+// Fonction pour ouvrir un onglet de détail Pokémon
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.querySelectorAll(".sidebar ul li a");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    if (evt) {
+        evt.currentTarget.className += " active";
+    }
+}
+
+// Lorsque le contenu du document est chargé, exécute la fonction suivante
 document.addEventListener("DOMContentLoaded", () => {
+    // Sélectionne les éléments du DOM nécessaires
     const pokedex = document.getElementById('pokedex');
     const searchForm = document.getElementById('search-form');
     const searchType = document.getElementById('search-type');
@@ -13,11 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const resetButton = document.getElementById('reset-button');
     const modal = document.getElementById("pokemon-modal");
     const closeButton = document.querySelector(".close-button");
+    
+    // Variables de contrôle
     let currentOffset = 0;
     const limit = 20;
     let allPokemonData = [];
     const displayedPokemonIds = new Set();
 
+    // Couleurs associées aux types de Pokémon
     const typeColors = {
         normal: '#A8A77A',
         fire: '#EE8130',
@@ -39,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fairy: '#D685AD'
     };
 
+    // Traduction des types de Pokémon en français
     const typeTranslation = {
         normal: 'Normal',
         fighting: 'Combat',
@@ -60,8 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
         fairy: 'Fée'
     };
 
+    // Cache le pokédex au chargement
     pokedex.style.display = 'none';
 
+    // Fonction pour récupérer les données Pokémon par génération
     async function fetchPokemonDataByGeneration(generationId) {
         try {
             const response = await fetch(`https://pokeapi.co/api/v2/generation/${generationId}`);
@@ -77,10 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Fonction pour trier les Pokémon par numéro
     function sortPokemonByNumber(pokemons) {
         return pokemons.sort((a, b) => a.id - b.id);
     }
 
+    // Fonction pour afficher les Pokémon
     async function displayPokemon(pokemons, reset = false) {
         if (reset) {
             pokedex.innerHTML = '';
@@ -132,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Fonction pour afficher les détails d'un Pokémon
     async function showPokemonDetails(pokemon, nameInFrench) {
         try {
             const speciesResponse = await fetch(pokemon.species.url);
@@ -187,6 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Fonction pour afficher les localisations d'un Pokémon
     async function showPokemonLocations(pokemon) {
         const locationResponse = await fetch(pokemon.location_area_encounters);
         const locations = await locationResponse.json();
@@ -201,6 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
+    // Fonction pour rendre la chaîne d'évolution
     async function renderEvolutionChain(chain) {
         if (!chain) return "<p>Aucune information d'évolution disponible.</p>";
 
@@ -230,6 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return evolutionHTML;
     }
 
+    // Fonction pour rendre les attaques d'un Pokémon
     async function renderAttacks(moves) {
         const attackNames = await Promise.all(moves.map(async (move) => {
             const moveResponse = await fetch(move.move.url);
@@ -240,6 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return attackNames.join('');
     }
 
+    // Fonction pour filtrer les Pokémon selon les critères de recherche
     function filterPokemon(pokemons, type, number, heightComparator, height, weightComparator, weight) {
         if (!pokemons) return [];
         return pokemons.filter(pokemon => {
@@ -253,6 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Événement de soumission du formulaire de recherche
     searchForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const generationId = searchGeneration.value;
@@ -285,6 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Événement pour réinitialiser le formulaire
     resetButton.addEventListener('click', () => {
         searchForm.reset();
         pokedex.style.display = 'none';
@@ -292,26 +326,12 @@ document.addEventListener("DOMContentLoaded", () => {
         noResultsMessage.style.display = 'none';
     });
 
-    function openTab(evt, tabName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.querySelectorAll(".sidebar ul li a");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(tabName).style.display = "block";
-        if (evt) {
-            evt.currentTarget.className += " active";
-        }
-    }
-
+    // Événement pour fermer la modal
     closeButton.addEventListener('click', () => {
         modal.style.display = "none";
     });
 
+    // Événement pour fermer la modal en cliquant à l'extérieur
     window.addEventListener('click', (event) => {
         if (event.target == modal) {
             modal.style.display = "none";
