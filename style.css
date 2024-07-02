@@ -4,6 +4,8 @@ header {
     text-align: center;
     background-color: #fff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    position: relative; /* Ajouter pour que le z-index prenne effet */
 }
 
 #header-image {
@@ -16,8 +18,14 @@ header {
 #app {
     width: 90%;
     max-width: 1200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     margin: 20px auto;
     text-align: center;
+    z-index: 2; /* Assurez-vous que le conteneur principal est devant les Pokéballs */
+    position: relative; /* Ajouter pour que le z-index prenne effet */
 }
 
 /* Card Layout */
@@ -31,41 +39,72 @@ header {
 }
 
 /* Styles pour le conteneur de recherche */
+#search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
 #search-container h2 {
     margin-top: 0;
+    font-size: 1.5em;
+    color: #333;
+    width: 100%;
+    text-align: center;
 }
 
 #search-form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px; /* Ajustez cette valeur selon vos besoins */
 }
 
 #search-form div {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    width: 100%;
 }
 
 #search-form label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    font-size: 1em;
+    color: #555;
 }
 
 #search-form select, #search-form input {
-    padding: 5px;
-    width: 200px;
-    margin: 0 10px;
+    padding: 10px;
+    width: calc(100% - 20px);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+#search-form select:focus, #search-form input:focus {
+    border-color: #4caf50;
+    outline: none;
 }
 
 .inline-field {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 #search-form .button-group {
     display: flex;
     justify-content: center;
     gap: 10px;
+    margin-top: 20px;
+    width: 100%;
 }
 
 #search-form button {
@@ -75,21 +114,26 @@ header {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    flex: 1;
+    max-width: 200px;
 }
 
 #search-form button:hover {
     background-color: #45a049;
+    transform: scale(1.05);
+}
+
+#search-form button:active {
+    background-color: #3e8e41;
 }
 
 #selected-criteria {
-    margin-top: 20px;
-    text-align: left;
-}
-
-#no-results-message {
-    margin-top: 20px;
-    color: red;
-    font-weight: bold;
+    margin: 20px 0;
+    text-align: center;
+    width: 100%;
+    max-width: 800px; /* Ajustez cette valeur selon vos besoins */
+    font-size: 1em;
 }
 
 /* Styles pour le conteneur des cartes Pokémon */
@@ -98,6 +142,8 @@ header {
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
+    z-index: 2; /* Assurez-vous que le conteneur des cartes est devant les Pokéballs */
+    position: relative; /* Ajouter pour que le z-index prenne effet */
 }
 
 /* Styles pour chaque carte Pokémon */
@@ -149,14 +195,13 @@ header {
 .modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 3; /* Assurez-vous que la modale est devant les autres éléments */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
     padding-top: 60px;
 }
 
@@ -166,9 +211,18 @@ header {
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    max-width: 1000px;
     border-radius: 10px;
     position: relative;
     display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .close-button {
@@ -198,25 +252,38 @@ header {
     background: #f9f9f9;
     padding: 20px;
     border-right: 1px solid #ddd;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.sidebar:hover {
+    background-color: #f1f1f1;
 }
 
 .sidebar ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 .sidebar ul li {
-    margin: 10px 0;
+    margin: 15px 0;
 }
 
 .sidebar ul li a {
     text-decoration: none;
     color: #007bff;
     font-size: 16px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .sidebar ul li a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
 }
 
 /* Styles pour le contenu des onglets */
@@ -236,6 +303,8 @@ header {
 
 .tabcontent h3 {
     margin-top: 0;
+    font-size: 1.5em;
+    color: #333;
 }
 
 .evolution-chain img {
@@ -243,4 +312,42 @@ header {
     height: 50px;
     vertical-align: middle;
     margin-right: 10px;
+    object-fit: cover;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: black; /* Fond noir pour l'animation */
+}
+
+#pokeball-animation-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1; /* Assurez-vous que les Pokéballs sont en arrière-plan mais devant le fond noir */
+}
+
+.pokeball {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-image: url('/Pokedex/pokeball.png'); /* Remplacez par le chemin vers votre image de Pokéball */
+    background-size: cover;
+    animation: movePokeball 5s linear infinite;
+}
+
+@keyframes movePokeball {
+    0% {
+        transform: translateX(100vw) translateY(-50px);
+    }
+    100% {
+        transform: translateX(-50px) translateY(100vh);
+    }
 }

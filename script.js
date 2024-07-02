@@ -337,4 +337,27 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.style.display = "none";
         }
     });
+
+    // Fonction pour créer une Pokéball animée
+function createPokeball() {
+    const pokeball = document.createElement('div');
+    pokeball.classList.add('pokeball');
+
+    // Position initiale aléatoire sur l'axe vertical
+    pokeball.style.top = `${Math.random(1) * window.innerHeight}px`;
+
+    // Durée d'animation aléatoire pour varier les vitesses de déplacement
+    pokeball.style.animationDuration = `${Math.random() * 3 + 2}s`;
+
+    // Ajoute la Pokéball au conteneur
+    document.getElementById('pokeball-animation-container').appendChild(pokeball);
+
+    // Retire la Pokéball du DOM une fois l'animation terminée
+    pokeball.addEventListener('animationend', () => {
+        pokeball.remove();
+    });
+}
+
+// Génère des Pokéballs à intervalles réguliers
+setInterval(createPokeball, 500);
 });
