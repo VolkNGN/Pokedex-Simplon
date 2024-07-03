@@ -2,10 +2,10 @@
 header {
     width: 100%;
     text-align: center;
-    background-color: #fff;
+    background-color: #ffffff00;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 2;
-    position: relative; /* Ajouter pour que le z-index prenne effet */
+    position: relative; /* Assurer que le z-index prenne effet */
 }
 
 #header-image {
@@ -24,18 +24,8 @@ header {
     flex-direction: column;
     margin: 20px auto;
     text-align: center;
-    z-index: 2; /* Assurez-vous que le conteneur principal est devant les Pokéballs */
-    position: relative; /* Ajouter pour que le z-index prenne effet */
-}
-
-/* Card Layout */
-.card {
-    background-color: #ffffff;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: left;
+    z-index: 2; /* Assurer que le conteneur principal est devant les Pokéballs */
+    position: relative; /* Assurer que le z-index prenne effet */
 }
 
 /* Styles pour le conteneur de recherche */
@@ -142,8 +132,9 @@ header {
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
-    z-index: 2; /* Assurez-vous que le conteneur des cartes est devant les Pokéballs */
-    position: relative; /* Ajouter pour que le z-index prenne effet */
+    z-index: 2; /* Assurer que le conteneur des cartes est devant les Pokéballs */
+    position: relative; /* Assurer que le z-index prenne effet */
+    visibility: visible; /* Assurer que le conteneur est visible */
 }
 
 /* Styles pour chaque carte Pokémon */
@@ -157,6 +148,7 @@ header {
     transition: transform 0.2s, box-shadow 0.2s;
     position: relative;
     will-change: transform, box-shadow;
+    display: block; /* Assurer que les cartes sont affichées en bloc */
 }
 
 /* Effet au survol pour chaque carte Pokémon */
@@ -195,7 +187,7 @@ header {
 .modal {
     display: none;
     position: fixed;
-    z-index: 3; /* Assurez-vous que la modale est devant les autres éléments */
+    z-index: 3; /* Assurer que la modale est devant les autres éléments */
     left: 0;
     top: 0;
     width: 100%;
@@ -320,7 +312,7 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto; /* Permettre le défilement */
     background-color: black; /* Fond noir pour l'animation */
 }
 
@@ -331,14 +323,14 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 1; /* Assurez-vous que les Pokéballs sont en arrière-plan mais devant le fond noir */
+    z-index: 1; /* Assurer que les Pokéballs sont en arrière-plan mais devant le fond noir */
 }
 
 .pokeball {
     position: absolute;
     width: 50px;
     height: 50px;
-    background-image: url('/Pokedex/pokeball.png'); /* Remplacez par le chemin vers votre image de Pokéball */
+    background-image: url('/Pokedex/pokeball.png'); /* Remplacer par le chemin vers votre image de Pokéball */
     background-size: cover;
     animation: movePokeball 5s linear infinite;
 }

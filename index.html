@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedex</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Swiper JS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 </head>
 <body>
@@ -13,12 +12,10 @@
     <div id="pokeball-animation-container"></div>
     <!-- Image du Pokédex en tant que header -->
     <header>
-        <img src="/Pokedex/Pokedex logo.png" alt="Pokédex" id="header-image">
+        <img src="Pokedex/Pokedex logo.png" alt="Pokédex" id="header-image">
     </header>
     <!-- Conteneur principal de l'application -->
     <div id="app">
-    
-
         <!-- Formulaire de recherche -->
         <div id="search-container">
             <h2>Recherche avancée</h2>
@@ -63,7 +60,7 @@
                     <label for="search-number">Numéro du Pokédex</label>
                     <input type="number" id="search-number" min="1" placeholder="Numéro du Pokédex">
                 </div>
-                <div>
+                <div class="inline-field">
                     <label for="search-height-comparator">Taille</label>
                     <select id="search-height-comparator">
                         <option value="at-least">Au moins</option>
@@ -72,7 +69,7 @@
                     </select>
                     <input type="number" id="search-height" placeholder="Taille (m)">
                 </div>
-                <div>
+                <div class="inline-field">
                     <label for="search-weight-comparator">Poids</label>
                     <select id="search-weight-comparator">
                         <option value="at-least">Au moins</option>
@@ -121,7 +118,6 @@
         </div>
     </div>
     <script src="script.js"></script>
-    <!-- Swiper JS -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </body>
 </html>
