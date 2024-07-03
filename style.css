@@ -157,7 +157,7 @@ header {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
+    gap: 20px; /* Augmenter l'espace entre les cartes */
     z-index: 2; /* Assurer que le conteneur des cartes est devant les Pokéballs */
     position: relative; /* Assurer que le z-index prenne effet */
     visibility: visible; /* Assurer que le conteneur est visible */
@@ -166,12 +166,12 @@ header {
 /* Styles pour chaque carte Pokémon */
 .pokemon-card {
     background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 200px;
-    padding: 10px;
+    border-radius: 15px; /* Augmenter le rayon des bordures pour un effet plus doux */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Augmenter l'ombre pour plus de profondeur */
+    width: 250px; /* Augmenter la largeur des cartes */
+    padding: 20px; /* Augmenter le padding pour plus d'espace intérieur */
     text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.3s, box-shadow 0.3s; /* Rendre la transition plus fluide */
     position: relative;
     will-change: transform, box-shadow;
     display: block; /* Assurer que les cartes sont affichées en bloc */
@@ -179,34 +179,34 @@ header {
 
 /* Effet au survol pour chaque carte Pokémon */
 .pokemon-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transform: scale(1.1); /* Augmenter légèrement l'effet de zoom au survol */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Renforcer l'ombre au survol */
     cursor: pointer;
 }
 
 /* Styles pour les images des Pokémon */
 .pokemon-card img {
-    width: 100px;
+    width: 100px; /* Augmenter la taille des images */
     height: 100px;
 }
 
 /* Styles pour les noms des Pokémon */
 .pokemon-card h2 {
-    margin: 10px 0;
-    font-size: 1.2em;
+    margin: 15px 0;
+    font-size: 1.4em; /* Augmenter la taille de la police */
     color: #333;
 }
 
 /* Styles pour le numéro du Pokémon */
 .pokemon-number {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 15px; /* Ajuster la position du numéro */
+    left: 15px;
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 1em;
+    border-radius: 8px; /* Augmenter le rayon des bordures */
+    font-size: 1.1em; /* Augmenter la taille de la police */
 }
 
 /* Styles pour la modale */
@@ -296,7 +296,6 @@ header {
     padding: 10px;
     border-radius: 5px;
     transition: background-color 0.3s, color 0.3s;
-    
 }
 
 .sidebar ul li a:hover {
@@ -363,10 +362,10 @@ body, html {
 }
 
 @keyframes movePokeball {
-    0% {
-        transform: translateX(100vw) translateY(-50px);
-    }
-    100% {
-        transform: translateX(-50px) translateY(100vh);
-    }
-}
+            0% {
+                transform: translateY(0px) translateX(calc(100vw * var(--random-position)));
+            }
+            100% {
+                transform: translateY(100vh) translateX(calc(100vw * var(--random-position)));
+            }
+        }

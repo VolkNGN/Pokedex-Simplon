@@ -113,10 +113,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 `linear-gradient(45deg, ${primaryTypeColor} 50%, ${secondaryTypeColor} 50%)` :
                 primaryTypeColor;
 
+            // Utilisation des sprites animés
+            const animatedSprite = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
+            const staticSprite = pokemon.sprites.front_default;
+            const spriteToUse = animatedSprite || staticSprite;
+
             pokemonCard.innerHTML = `
                 <div class="pokemon-number">#${pokemon.id}</div>
                 <div class="pokemon-image">
-                    <img src="${pokemon.sprites.front_default}" alt="${nameInFrench}" loading="lazy">
+                    <img src="${spriteToUse}" alt="${nameInFrench}" loading="lazy">
                 </div>
                 <div class="pokemon-info">
                     <h2 class="pokemon-name">${nameInFrench}</h2>
@@ -300,16 +305,23 @@ document.addEventListener("DOMContentLoaded", () => {
     function createPokeball() {
         const pokeball = document.createElement('div');
         pokeball.classList.add('pokeball');
-        pokeball.style.top = `${Math.random() * window.innerHeight}px`;
-        pokeball.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        
+        // Définir une position aléatoire sur l'axe X
+        const randomPosition = Math.random();
+        pokeball.style.setProperty('--random-position', randomPosition);
+    
+        // Définir la durée de l'animation
+        pokeball.style.animationDuration = `${Math.random() * 1 + 3}s`;
+        
         document.getElementById('pokeball-animation-container').appendChild(pokeball);
+        
         pokeball.addEventListener('animationend', () => {
             pokeball.remove();
         });
     }
-
-    setInterval(createPokeball, 750);
-
+    
+    setInterval(createPokeball, 1000);
+    
     async function handleSearch() {
         const generationId = searchGeneration.value;
         const type = Array.from(searchType.selectedOptions).map(option => option.value);
@@ -318,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const heightMax = searchHeightMax.value;
         const weightMin = searchWeightMin.value;
         const weightMax = searchWeightMax.value;
-
+    
         selectedCriteria.innerHTML = `
             <p>Génération: ${generationId}</p>
             <p>Types: ${type.join(', ')}</p>
@@ -326,12 +338,12 @@ document.addEventListener("DOMContentLoaded", () => {
             <p>Taille: ${heightMin} - ${heightMax} m</p>
             <p>Poids: ${weightMin} - ${weightMax} kg</p>
         `;
-
+    
         if (!generationId) {
             pokedex.style.display = 'none';
             return;
         }
-
+    
         try {
             const allPokemon = await fetchPokemonDataByGeneration(generationId);
             console.log('Fetched Pokémon:', allPokemon);
@@ -347,13 +359,14 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultsMessage.style.display = 'block';
         }
     }
+    
 
     // Ajout de la fonction openTab
     function openTab(evt, tabName) {
         // Déclaration de toutes les variables
         let i, tabcontent, tablinks;
 
-        // Obtenez tous les éléments avec la classe "tabcontent" et cachez-les
+        // Obtenz tous les éléments avec la classe "tabcontent" et cachez-les
         tabcontent = document.getElementsByClassName("tabcontent");
         for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
