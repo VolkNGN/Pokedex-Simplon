@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const pokedex = document.getElementById('pokedex');
     const searchForm = document.getElementById('search-form');
+    const searchName = document.getElementById('search-name');
     const searchType = document.getElementById('search-type');
     const searchNumber = document.getElementById('search-number');
     const searchGeneration = document.getElementById('search-generation');
@@ -247,14 +248,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return attackNames.join('');
     }
 
-    function filterPokemon(pokemons, type, number, heightMin, heightMax, weightMin, weightMax) {
+    function filterPokemon(pokemons, name, type, number, heightMin, heightMax, weightMin, weightMax) {
         if (!pokemons) return [];
         return pokemons.filter(pokemon => {
+            const matchesName = !name || pokemon.name.toLowerCase() === name.toLowerCase();
             const matchesType = type.length === 0 || pokemon.types.some(p => type.includes(p.type.name));
             const matchesNumber = number === '' || pokemon.id == number;
             const matchesHeight = pokemon.height / 10 >= heightMin && pokemon.height / 10 <= heightMax;
             const matchesWeight = pokemon.weight / 10 >= weightMin && pokemon.weight / 10 <= weightMax;
-            return matchesType && matchesNumber && matchesHeight && matchesWeight;
+            return matchesName && matchesType && matchesNumber && matchesHeight && matchesWeight;
         });
     }
 
@@ -273,6 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Ajout des écouteurs d'événements pour dynamiser la recherche
+    searchName.addEventListener('input', handleSearch);
     searchGeneration.addEventListener('change', handleSearch);
     searchType.addEventListener('change', handleSearch);
     searchNumber.addEventListener('input', handleSearch);
@@ -311,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pokeball.style.setProperty('--random-position', randomPosition);
     
         // Définir la durée de l'animation
-        pokeball.style.animationDuration = `${Math.random() * 1 + 3}s`;
+        pokeball.style.animationDuration = `${Math.random() * 3 + 2}s`;
         
         document.getElementById('pokeball-animation-container').appendChild(pokeball);
         
@@ -324,6 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     async function handleSearch() {
         const generationId = searchGeneration.value;
+        const name = searchName.value;
         const type = Array.from(searchType.selectedOptions).map(option => option.value);
         const number = searchNumber.value;
         const heightMin = searchHeightMin.value;
@@ -332,6 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const weightMax = searchWeightMax.value;
     
         selectedCriteria.innerHTML = `
+            <p>Nom: ${name}</p>
             <p>Génération: ${generationId}</p>
             <p>Types: ${type.join(', ')}</p>
             <p>Numéro du Pokédex: ${number}</p>
@@ -347,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const allPokemon = await fetchPokemonDataByGeneration(generationId);
             console.log('Fetched Pokémon:', allPokemon);
-            const filteredPokemon = filterPokemon(allPokemon, type, number, heightMin, heightMax, weightMin, weightMax);
+            const filteredPokemon = filterPokemon(allPokemon, name, type, number, heightMin, heightMax, weightMin, weightMax);
             console.log('Filtered Pokémon:', filteredPokemon);
             allPokemonData = filteredPokemon;
             await displayPokemon(filteredPokemon, true);
@@ -359,7 +364,6 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultsMessage.style.display = 'block';
         }
     }
-    
 
     // Ajout de la fonction openTab
     function openTab(evt, tabName) {

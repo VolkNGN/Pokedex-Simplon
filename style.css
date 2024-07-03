@@ -94,7 +94,7 @@ header {
     position: absolute;
     width: 100%;
     height: 10px;
-    background: #ddd;
+    background: #dddddd00;
     border-radius: 5px;
     pointer-events: none;
 }
@@ -145,6 +145,9 @@ header {
 }
 
 #selected-criteria {
+    border: solid;
+    background: #fff;
+    border-radius: 50%;
     margin: 20px 0;
     text-align: center;
     width: 100%;
