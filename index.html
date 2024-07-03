@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedex</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Swiper JS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 </head>
 <body>
@@ -12,7 +13,7 @@
     <div id="pokeball-animation-container"></div>
     <!-- Image du Pokédex en tant que header -->
     <header>
-        <img src="Pokedex/Pokedex logo.png" alt="Pokédex" id="header-image">
+        <img src="/Pokedex/Pokedex logo.png" alt="Pokédex" id="header-image">
     </header>
     <!-- Conteneur principal de l'application -->
     <div id="app">
@@ -60,26 +61,27 @@
                     <label for="search-number">Numéro du Pokédex</label>
                     <input type="number" id="search-number" min="1" placeholder="Numéro du Pokédex">
                 </div>
-                <div class="inline-field">
-                    <label for="search-height-comparator">Taille</label>
-                    <select id="search-height-comparator">
-                        <option value="at-least">Au moins</option>
-                        <option value="equal">Égal</option>
-                        <option value="at-most">Au plus</option>
-                    </select>
-                    <input type="number" id="search-height" placeholder="Taille (m)">
+                <div>
+                    <label for="search-height">Taille (m)</label>
+                    <div class="slider-container">
+                        <input type="range" id="search-height-min" min="0" max="20" step="0.1" value="0" oninput="updateHeightOutput()">
+                        <input type="range" id="search-height-max" min="0" max="20" step="0.1" value="20" oninput="updateHeightOutput()">
+                    </div>
+                    <div class="slider-values">
+                        <span id="height-min-val">0</span> - <span id="height-max-val">20</span> m
+                    </div>
                 </div>
-                <div class="inline-field">
-                    <label for="search-weight-comparator">Poids</label>
-                    <select id="search-weight-comparator">
-                        <option value="at-least">Au moins</option>
-                        <option value="equal">Égal</option>
-                        <option value="at-most">Au plus</option>
-                    </select>
-                    <input type="number" id="search-weight" placeholder="Poids (kg)">
+                <div>
+                    <label for="search-weight">Poids (kg)</label>
+                    <div class="slider-container">
+                        <input type="range" id="search-weight-min" min="0" max="1000" step="10" value="0" oninput="updateWeightOutput()">
+                        <input type="range" id="search-weight-max" min="0" max="1000" step="10" value="1000" oninput="updateWeightOutput()">
+                    </div>
+                    <div class="slider-values">
+                        <span id="weight-min-val">0</span> - <span id="weight-max-val">1000</span> kg
+                    </div>
                 </div>
                 <div class="buttons-container">
-                    <button type="submit">Rechercher</button>
                     <button type="button" id="reset-button">Réinitialiser</button>
                 </div>
             </form>
@@ -98,13 +100,13 @@
             <div class="modal-body">
                 <div class="sidebar">
                     <ul>
-                        <li><a href="#" onclick="openTab(event, 'Informations')">Informations</a></li>
-                        <li><a href="#" onclick="openTab(event, 'Formes')">Formes</a></li>
-                        <li><a href="#" onclick="openTab(event, 'Evolutions')">Évolutions et reproduction</a></li>
-                        <li><a href="#" onclick="openTab(event, 'Localisations')">Localisations</a></li>
-                        <li><a href="#" onclick="openTab(event, 'Statistiques')">Statistiques</a></li>
-                        <li><a href="#" onclick="openTab(event, 'Attaques')">Attaques</a></li>
-                        <li><a href="#" onclick="openTab(event, 'Descriptions')">Descriptions</a></li>
+                        <li><a href="#" class="tablinks" data-tab="Informations">Informations</a></li>
+                        <li><a href="#" class="tablinks" data-tab="Formes">Formes</a></li>
+                        <li><a href="#" class="tablinks" data-tab="Evolutions">Évolutions et reproduction</a></li>
+                        <li><a href="#" class="tablinks" data-tab="Localisations">Localisations</a></li>
+                        <li><a href="#" class="tablinks" data-tab="Statistiques">Statistiques</a></li>
+                        <li><a href="#" class="tablinks" data-tab="Attaques">Attaques</a></li>
+                        <li><a href="#" class="tablinks" data-tab="Descriptions">Descriptions</a></li>
                     </ul>
                 </div>
                 <div class="tabcontent" id="Informations"></div>
@@ -118,6 +120,7 @@
         </div>
     </div>
     <script src="script.js"></script>
+    <!-- Swiper JS -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </body>
 </html>

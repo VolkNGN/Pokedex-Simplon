@@ -1,36 +1,19 @@
-// Fonction pour ouvrir un onglet de détail Pokémon
-function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.querySelectorAll(".sidebar ul li a");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    if (evt) {
-        evt.currentTarget.className += " active";
-    }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     const pokedex = document.getElementById('pokedex');
     const searchForm = document.getElementById('search-form');
     const searchType = document.getElementById('search-type');
     const searchNumber = document.getElementById('search-number');
     const searchGeneration = document.getElementById('search-generation');
-    const searchHeightComparator = document.getElementById('search-height-comparator');
-    const searchHeight = document.getElementById('search-height');
-    const searchWeightComparator = document.getElementById('search-weight-comparator');
-    const searchWeight = document.getElementById('search-weight');
+    const searchHeightMin = document.getElementById('search-height-min');
+    const searchHeightMax = document.getElementById('search-height-max');
+    const searchWeightMin = document.getElementById('search-weight-min');
+    const searchWeightMax = document.getElementById('search-weight-max');
     const selectedCriteria = document.getElementById('selected-criteria');
     const noResultsMessage = document.getElementById('no-results-message');
     const resetButton = document.getElementById('reset-button');
     const modal = document.getElementById("pokemon-modal");
     const closeButton = document.querySelector(".close-button");
-    
+
     let allPokemonData = [];
     const displayedPokemonIds = new Set();
 
@@ -86,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const pokemonResponse = await fetch(species.url.replace('pokemon-species', 'pokemon'));
                 return await pokemonResponse.json();
             }));
+            console.log('Fetched Pokemon (raw):', allPokemon); // Ajout de log
             return allPokemon;
         } catch (error) {
             console.error('Erreur lors de la récupération des données Pokémon:', error);
@@ -94,7 +78,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function sortPokemonByNumber(pokemons) {
-        return pokemons.sort((a, b) => a.id - b.id);
+        const sortedPokemons = pokemons.sort((a, b) => a.id - b.id);
+        console.log('Sorted Pokemon:', sortedPokemons); // Ajout de log
+        return sortedPokemons;
     }
 
     async function displayPokemon(pokemons, reset = false) {
@@ -154,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const speciesData = await speciesResponse.json();
             const evolutionResponse = await fetch(speciesData.evolution_chain.url);
             const evolutionData = await evolutionResponse.json();
-            
+
             const typeInFrench = pokemon.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
 
             document.getElementById('Informations').innerHTML = `
@@ -256,57 +242,43 @@ document.addEventListener("DOMContentLoaded", () => {
         return attackNames.join('');
     }
 
-    function filterPokemon(pokemons, type, number, heightComparator, height, weightComparator, weight) {
+    function filterPokemon(pokemons, type, number, heightMin, heightMax, weightMin, weightMax) {
         if (!pokemons) return [];
         return pokemons.filter(pokemon => {
             const matchesType = type.length === 0 || pokemon.types.some(p => type.includes(p.type.name));
             const matchesNumber = number === '' || pokemon.id == number;
-            const matchesHeight = height === '' || (heightComparator === 'at-least' && pokemon.height / 10 >= height) ||
-                (heightComparator === 'at-most' && pokemon.height / 10 <= height) || (heightComparator === 'equal' && pokemon.height / 10 == height);
-            const matchesWeight = weight === '' || (weightComparator === 'at-least' && pokemon.weight / 10 >= weight) ||
-                (weightComparator === 'at-most' && pokemon.weight / 10 <= weight) || (weightComparator === 'equal' && pokemon.weight / 10 == weight);
+            const matchesHeight = pokemon.height / 10 >= heightMin && pokemon.height / 10 <= heightMax;
+            const matchesWeight = pokemon.weight / 10 >= weightMin && pokemon.weight / 10 <= weightMax;
             return matchesType && matchesNumber && matchesHeight && matchesWeight;
         });
     }
 
-    searchForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const generationId = searchGeneration.value;
-        const type = Array.from(searchType.selectedOptions).map(option => option.value);
-        const number = searchNumber.value;
-        const heightComparator = searchHeightComparator.value;
-        const height = searchHeight.value;
-        const weightComparator = searchWeightComparator.value;
-        const weight = searchWeight.value;
+    function updateHeightOutput() {
+        const heightMin = searchHeightMin.value;
+        const heightMax = searchHeightMax.value;
+        document.getElementById('height-min-val').textContent = heightMin;
+        document.getElementById('height-max-val').textContent = heightMax;
+    }
 
-        selectedCriteria.innerHTML = `
-            <p>Génération: ${generationId}</p>
-            <p>Types: ${type.join(', ')}</p>
-            <p>Numéro du Pokédex: ${number}</p>
-            <p>Taille: ${heightComparator} ${height} m</p>
-            <p>Poids: ${weightComparator} ${weight} kg</p>
-        `;
+    function updateWeightOutput() {
+        const weightMin = searchWeightMin.value;
+        const weightMax = searchWeightMax.value;
+        document.getElementById('weight-min-val').textContent = weightMin;
+        document.getElementById('weight-max-val').textContent = weightMax;
+    }
 
-        if (!generationId) {
-            pokedex.style.display = 'none';
-            return;
-        }
-
-        try {
-            const allPokemon = await fetchPokemonDataByGeneration(generationId);
-            console.log('Fetched Pokémon:', allPokemon);
-            const filteredPokemon = filterPokemon(allPokemon, type, number, heightComparator, height, weightComparator, weight);
-            console.log('Filtered Pokémon:', filteredPokemon);
-            allPokemonData = filteredPokemon;
-            await displayPokemon(filteredPokemon, true);
-            pokedex.style.display = filteredPokemon.length ? 'flex' : 'none';
-            noResultsMessage.style.display = filteredPokemon.length ? 'none' : 'block';
-        } catch (error) {
-            console.error('Erreur lors de la récupération des données Pokémon:', error);
-            pokedex.style.display = 'none';
-            noResultsMessage.style.display = 'block';
-        }
-    });
+    // Ajout des écouteurs d'événements pour dynamiser la recherche
+    searchGeneration.addEventListener('change', handleSearch);
+    searchType.addEventListener('change', handleSearch);
+    searchNumber.addEventListener('input', handleSearch);
+    searchHeightMin.addEventListener('input', updateHeightOutput);
+    searchHeightMax.addEventListener('input', updateHeightOutput);
+    searchWeightMin.addEventListener('input', updateWeightOutput);
+    searchWeightMax.addEventListener('input', updateWeightOutput);
+    searchHeightMin.addEventListener('input', handleSearch);
+    searchHeightMax.addEventListener('input', handleSearch);
+    searchWeightMin.addEventListener('input', handleSearch);
+    searchWeightMax.addEventListener('input', handleSearch);
 
     resetButton.addEventListener('click', () => {
         searchForm.reset();
@@ -337,4 +309,75 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setInterval(createPokeball, 750);
+
+    async function handleSearch() {
+        const generationId = searchGeneration.value;
+        const type = Array.from(searchType.selectedOptions).map(option => option.value);
+        const number = searchNumber.value;
+        const heightMin = searchHeightMin.value;
+        const heightMax = searchHeightMax.value;
+        const weightMin = searchWeightMin.value;
+        const weightMax = searchWeightMax.value;
+
+        selectedCriteria.innerHTML = `
+            <p>Génération: ${generationId}</p>
+            <p>Types: ${type.join(', ')}</p>
+            <p>Numéro du Pokédex: ${number}</p>
+            <p>Taille: ${heightMin} - ${heightMax} m</p>
+            <p>Poids: ${weightMin} - ${weightMax} kg</p>
+        `;
+
+        if (!generationId) {
+            pokedex.style.display = 'none';
+            return;
+        }
+
+        try {
+            const allPokemon = await fetchPokemonDataByGeneration(generationId);
+            console.log('Fetched Pokémon:', allPokemon);
+            const filteredPokemon = filterPokemon(allPokemon, type, number, heightMin, heightMax, weightMin, weightMax);
+            console.log('Filtered Pokémon:', filteredPokemon);
+            allPokemonData = filteredPokemon;
+            await displayPokemon(filteredPokemon, true);
+            pokedex.style.display = filteredPokemon.length ? 'flex' : 'none';
+            noResultsMessage.style.display = filteredPokemon.length ? 'none' : 'block';
+        } catch (error) {
+            console.error('Erreur lors de la récupération des données Pokémon:', error);
+            pokedex.style.display = 'none';
+            noResultsMessage.style.display = 'block';
+        }
+    }
+
+    // Ajout de la fonction openTab
+    function openTab(evt, tabName) {
+        // Déclaration de toutes les variables
+        let i, tabcontent, tablinks;
+
+        // Obtenez tous les éléments avec la classe "tabcontent" et cachez-les
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Obtenez tous les éléments avec la classe "tablinks" et supprimez la classe "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Affichez l'onglet actuel et ajoutez une classe "active" au bouton qui a ouvert l'onglet
+        document.getElementById(tabName).style.display = "block";
+        if (evt) {
+            evt.currentTarget.className += " active";
+        }
+    }
+
+    // Ajoutez un écouteur d'événement aux onglets pour gérer le changement d'onglet
+    const tabLinks = document.querySelectorAll(".tablinks");
+    tabLinks.forEach(tab => {
+        tab.addEventListener("click", (event) => {
+            openTab(event, tab.dataset.tab);
+        });
+    });
+
 });
