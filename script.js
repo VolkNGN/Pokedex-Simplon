@@ -167,9 +167,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const typeInFrench = pokemon.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
 
+            const animatedSprite = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
+            const staticSprite = pokemon.sprites.front_default;
+            const spriteToUse = animatedSprite || staticSprite;
+
             document.getElementById('Informations').innerHTML = `
                 <h2>${nameInFrench}</h2>
-                <img src="${pokemon.sprites.front_default}" alt="${nameInFrench}">
+                <img src="${spriteToUse}" alt="${nameInFrench}">
                 <p><strong>Type:</strong> ${typeInFrench}</p>
                 <p><strong>Poids:</strong> ${pokemon.weight / 10} kg</p>
                 <p><strong>Taille:</strong> ${pokemon.height / 10} m</p>
@@ -229,12 +233,28 @@ document.addEventListener("DOMContentLoaded", () => {
             const speciesData = await speciesResponse.json();
             const nameInFrench = speciesData.names.find(name => name.language.name === 'fr')?.name || formData.name;
 
+            // Vérifier si form_names existe et a au moins un élément
+            let formNameInFrench = '';
+            if (formData.form_names && formData.form_names.length > 0) {
+                formNameInFrench = formData.form_names.find(name => name.language.name === 'fr')?.name;
+            }
+
+            if (formNameInFrench) {
+                formNameInFrench = `${nameInFrench} ${formNameInFrench}`;
+            } else {
+                formNameInFrench = nameInFrench; // Utiliser le nom par défaut si le nom de la forme n'est pas disponible
+            }
+
             const typeInFrench = formData.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
+
+            const animatedSprite = formData.sprites.versions['generation-v']['black-white'].animated.front_default;
+            const staticSprite = formData.sprites.front_default;
+            const spriteToUse = animatedSprite || staticSprite;
 
             formsHTML += `
                 <div class="pokemon-form">
-                    <h4>${nameInFrench}</h4>
-                    <img src="${formData.sprites.front_default}" alt="${nameInFrench}">
+                    <h4>${formNameInFrench}</h4>
+                    <img src="${spriteToUse}" alt="${formNameInFrench}">
                     <p><strong>Type:</strong> ${typeInFrench}</p>
                     <p><strong>Poids:</strong> ${formData.weight / 10} kg</p>
                     <p><strong>Taille:</strong> ${formData.height / 10} m</p>
@@ -269,14 +289,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const trigger = currentChain.evolution_details[0]?.trigger?.name ? ` (Déclencheur: ${currentChain.evolution_details[0].trigger.name})` : '';
             const item = currentChain.evolution_details[0]?.item?.name ? ` (Objet: ${currentChain.evolution_details[0].item.name})` : '';
             const pokemonData = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`).then(res => res.json());
-            const pokemonImage = pokemonData.sprites.front_default;
+
+            const animatedSprite = pokemonData.sprites.versions['generation-v']['black-white'].animated.front_default;
+            const staticSprite = pokemonData.sprites.front_default;
+            const spriteToUse = animatedSprite || staticSprite;
+
             const speciesResponse = await fetch(pokemonData.species.url);
             const speciesData = await speciesResponse.json();
             const nameInFrench = speciesData.names.find(name => name.language.name === 'fr')?.name || pokemonName;
 
             evolutionHTML += `
                 <div>
-                    <img src="${pokemonImage}" alt="${nameInFrench}">
+                    <img src="${spriteToUse}" alt="${nameInFrench}">
                     <p>${nameInFrench}${minLevel}${trigger}${item}</p>
                 </div>
             `;
