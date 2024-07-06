@@ -103,6 +103,32 @@ document.addEventListener("DOMContentLoaded", () => {
         return sortedPokemons;
     }
 
+    function getPokemonImage(pokemon) {
+        const animatedSpritePokeAPI = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
+        const staticSpritePokeAPI = pokemon.sprites.other['official-artwork'].front_default;
+        const animatedSpriteShowdown = `https://play.pokemonshowdown.com/sprites/xyani/${pokemon.name}.gif`;
+        const staticSpriteShowdown = `https://play.pokemonshowdown.com/sprites/xyani/${pokemon.name}.png`;
+
+        if (animatedSpritePokeAPI) {
+            return animatedSpritePokeAPI;
+        } else if (animatedSpriteShowdown) {
+            return animatedSpriteShowdown;
+        } else if (staticSpritePokeAPI) {
+            return staticSpritePokeAPI;
+        } else if (staticSpriteShowdown) {
+            return staticSpriteShowdown;
+        } else {
+            return null;
+        }
+    }
+
+    function handleImageError(event) {
+        const fallbackImage = event.target.dataset.fallback;
+        if (fallbackImage) {
+            event.target.src = fallbackImage;
+        }
+    }
+
     async function displayPokemon(pokemons, reset = false) {
         if (reset) {
             pokedex.innerHTML = '';
@@ -133,19 +159,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 `linear-gradient(45deg, ${primaryTypeColor} 50%, ${secondaryTypeColor} 50%)` :
                 primaryTypeColor;
 
-            let spriteToUse;
-            if (pokemon.id <= 649) { // Pokémon jusqu'à la génération 5
-                const animatedSprite = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
-                const staticSprite = pokemon.sprites.front_default;
-                spriteToUse = animatedSprite || staticSprite;
-            } else { // Pokémon à partir de la génération 6
-                spriteToUse = `https://play.pokemonshowdown.com/sprites/xyani/${pokemon.name}.gif`;
-            }
+            const spriteToUse = getPokemonImage(pokemon);
+            const fallbackSprite = pokemon.sprites.other['official-artwork'].front_default;
 
             pokemonCard.innerHTML = `
                 <div class="pokemon-number">#${pokemon.id}</div>
                 <div class="pokemon-image">
-                    <img src="${spriteToUse}" alt="${nameInFrench}" loading="lazy">
+                    <img src="${spriteToUse}" alt="${nameInFrench}" data-fallback="${fallbackSprite}" onerror="handleImageError(event)" loading="lazy">
                 </div>
                 <div class="pokemon-info">
                     <h2 class="pokemon-name">${nameInFrench}</h2>
@@ -172,18 +192,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const typeInFrench = pokemon.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
 
-            let spriteToUse;
-            if (pokemon.id <= 649) { // Pokémon jusqu'à la génération 5
-                const animatedSprite = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
-                const staticSprite = pokemon.sprites.front_default;
-                spriteToUse = animatedSprite || staticSprite;
-            } else { // Pokémon à partir de la génération 6
-                spriteToUse = `https://play.pokemonshowdown.com/sprites/xyani/${pokemon.name}.gif`;
-            }
+            const spriteToUse = getPokemonImage(pokemon);
+            const fallbackSprite = pokemon.sprites.other['official-artwork'].front_default;
 
             document.getElementById('Informations').innerHTML = `
                 <h2>${nameInFrench}</h2>
-                <img src="${spriteToUse}" alt="${nameInFrench}">
+                <img src="${spriteToUse}" alt="${nameInFrench}" data-fallback="${fallbackSprite}" onerror="handleImageError(event)">
                 <p><strong>Type:</strong> ${typeInFrench}</p>
                 <p><strong>Poids:</strong> ${pokemon.weight / 10} kg</p>
                 <p><strong>Taille:</strong> ${pokemon.height / 10} m</p>
@@ -261,19 +275,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const typeInFrench = formData.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
 
-            let spriteToUse;
-            if (formData.id <= 649) {
-                const animatedSprite = formData.sprites.versions['generation-v']['black-white'].animated.front_default;
-                const staticSprite = formData.sprites.front_default;
-                spriteToUse = animatedSprite || staticSprite;
-            } else {
-                spriteToUse = `https://play.pokemonshowdown.com/sprites/xyani/${formData.name}.gif`;
-            }
+            const spriteToUse = getPokemonImage(formData);
+            const fallbackSprite = formData.sprites.other['official-artwork'].front_default;
 
             formsHTML += `
                 <div class="pokemon-form">
                     <h4>${formNameInFrench}</h4>
-                    <img src="${spriteToUse}" alt="${formNameInFrench}">
+                    <img src="${spriteToUse}" alt="${formNameInFrench}" data-fallback="${fallbackSprite}" onerror="handleImageError(event)">
                     <p><strong>Type:</strong> ${typeInFrench}</p>
                     <p><strong>Poids:</strong> ${formData.weight / 10} kg</p>
                     <p><strong>Taille:</strong> ${formData.height / 10} m</p>
@@ -309,14 +317,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const item = currentChain.evolution_details[0]?.item?.name ? ` (Objet: ${currentChain.evolution_details[0].item.name})` : '';
             const pokemonData = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`).then(res => res.json());
 
-            let spriteToUse;
-            if (pokemonData.id <= 649) {
-                const animatedSprite = pokemonData.sprites.versions['generation-v']['black-white'].animated.front_default;
-                const staticSprite = pokemonData.sprites.front_default;
-                spriteToUse = animatedSprite || staticSprite;
-            } else {
-                spriteToUse = `https://play.pokemonshowdown.com/sprites/xyani/${pokemonName}.gif`;
-            }
+            const spriteToUse = getPokemonImage(pokemonData);
+            const fallbackSprite = pokemonData.sprites.other['official-artwork'].front_default;
 
             const speciesResponse = await fetch(pokemonData.species.url);
             const speciesData = await speciesResponse.json();
@@ -324,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             evolutionHTML += `
                 <div>
-                    <img src="${spriteToUse}" alt="${nameInFrench}">
+                    <img src="${spriteToUse}" alt="${nameInFrench}" data-fallback="${fallbackSprite}" onerror="handleImageError(event)">
                     <p>${nameInFrench}${minLevel}${trigger}${item}</p>
                 </div>
             `;
@@ -542,3 +544,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initializeEventListeners();
 });
+
+// Définir la fonction handleImageError dans le contexte global
+function handleImageError(event) {
+    const fallbackImage = event.target.dataset.fallback;
+    if (fallbackImage) {
+        event.target.src = fallbackImage;
+    }
+}
