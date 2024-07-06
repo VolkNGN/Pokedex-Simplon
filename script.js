@@ -308,22 +308,33 @@ document.addEventListener("DOMContentLoaded", () => {
     function createPokeball() {
         const pokeball = document.createElement('div');
         pokeball.classList.add('pokeball');
-        
-        // Définir une position aléatoire sur l'axe X
-        const randomPosition = Math.random();
-        pokeball.style.setProperty('--random-position', randomPosition);
+    
+        // Calculer la position aléatoire sur l'axe X
+        function getRandomPosition() {
+            const screenWidth = window.innerWidth;
+            const ballWidth = 50; // largeur approximative de la Pokéball en pixels
+            const scrollbarWidth = 15; // largeur approximative de la barre de défilement en pixels
+            const maxPosition = screenWidth - ballWidth - scrollbarWidth;
+            const randomPosition = Math.random() * maxPosition;
+            return randomPosition;
+        }
+    
+        const randomPosition = getRandomPosition();
+        pokeball.style.left = `${randomPosition}px`;
     
         // Définir la durée de l'animation
         pokeball.style.animationDuration = `${Math.random() * 3 + 2}s`;
-        
+    
         document.getElementById('pokeball-animation-container').appendChild(pokeball);
-        
+    
         pokeball.addEventListener('animationend', () => {
+            console.log('Animation terminée, suppression de la Pokéball');
             pokeball.remove();
         });
     }
     
-    setInterval(createPokeball, 1000);
+    setInterval(createPokeball, 250);
+    
     
     async function handleSearch() {
         const generationId = searchGeneration.value;
