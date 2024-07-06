@@ -56,7 +56,7 @@ header {
     max-width: 800px;
 }
 
-#search-form div {
+#search-form .form-group {
     margin-bottom: 15px;
     width: 100%;
 }
@@ -154,7 +154,7 @@ header {
 }
 
 /* Styles pour les boutons */
-#search-form .button-group {
+#search-form .buttons-container {
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -413,5 +413,22 @@ body, html {
     }
     to {
         top: 100vh;
+    }
+}
+
+/* Styles pour les écrans plus petits */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        box-shadow: none;
+    }
+
+    .modal-body {
+        flex-direction: column;
+    }
+
+    .tabcontent {
+        width: 100%;
     }
 }

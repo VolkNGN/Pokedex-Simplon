@@ -65,12 +65,17 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchPokemonDataByGeneration(generationId) {
         try {
             const response = await fetch(`https://pokeapi.co/api/v2/generation/${generationId}`);
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP! Statut: ${response.status}`);
+            }
             const generationData = await response.json();
             const allPokemon = await rateLimitRequests(generationData.pokemon_species.map(async (species) => {
                 const pokemonResponse = await fetch(species.url.replace('pokemon-species', 'pokemon'));
+                if (!pokemonResponse.ok) {
+                    throw new Error(`Erreur HTTP! Statut: ${pokemonResponse.status}`);
+                }
                 return await pokemonResponse.json();
             }), 5);
-            console.log('Fetched Pokemon (raw):', allPokemon);
             return allPokemon;
         } catch (error) {
             console.error('Erreur lors de la récupération des données Pokémon:', error);
@@ -98,9 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function sortPokemonByNumber(pokemons) {
-        const sortedPokemons = pokemons.sort((a, b) => a.id - b.id);
-        console.log('Sorted Pokemon:', sortedPokemons);
-        return sortedPokemons;
+        return pokemons.sort((a, b) => a.id - b.id);
     }
 
     function getPokemonImage(pokemon) {
@@ -109,17 +112,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const animatedSpriteShowdown = `https://play.pokemonshowdown.com/sprites/xyani/${pokemon.name}.gif`;
         const staticSpriteShowdown = `https://play.pokemonshowdown.com/sprites/xyani/${pokemon.name}.png`;
 
-        if (animatedSpritePokeAPI) {
-            return animatedSpritePokeAPI;
-        } else if (animatedSpriteShowdown) {
-            return animatedSpriteShowdown;
-        } else if (staticSpritePokeAPI) {
-            return staticSpritePokeAPI;
-        } else if (staticSpriteShowdown) {
-            return staticSpriteShowdown;
-        } else {
-            return null;
-        }
+        if (animatedSpritePokeAPI) return animatedSpritePokeAPI;
+        if (animatedSpriteShowdown) return animatedSpriteShowdown;
+        if (staticSpritePokeAPI) return staticSpritePokeAPI;
+        if (staticSpriteShowdown) return staticSpriteShowdown;
+
+        return null;
     }
 
     function handleImageError(event) {
@@ -144,8 +142,12 @@ document.addEventListener("DOMContentLoaded", () => {
             displayedPokemonIds.add(pokemon.id);
 
             const speciesResponse = await fetch(pokemon.species.url);
+            if (!speciesResponse.ok) {
+                console.error(`Erreur lors de la récupération des données de l'espèce: ${speciesResponse.status}`);
+                continue;
+            }
             const speciesData = await speciesResponse.json();
-            const nameInFrench = speciesData.names.find(name => name.language.name === 'fr').name || pokemon.name;
+            const nameInFrench = speciesData.names.find(name => name.language.name === 'fr')?.name || pokemon.name;
             const typeInFrench = pokemon.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
 
             const pokemonCard = document.createElement('div');
@@ -186,8 +188,14 @@ document.addEventListener("DOMContentLoaded", () => {
     async function showPokemonDetails(pokemon, nameInFrench) {
         try {
             const speciesResponse = await fetch(pokemon.species.url);
+            if (!speciesResponse.ok) {
+                throw new Error(`Erreur HTTP! Statut: ${speciesResponse.status}`);
+            }
             const speciesData = await speciesResponse.json();
             const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+            if (!evolutionResponse.ok) {
+                throw new Error(`Erreur HTTP! Statut: ${evolutionResponse.status}`);
+            }
             const evolutionData = await evolutionResponse.json();
 
             const typeInFrench = pokemon.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
@@ -257,8 +265,16 @@ document.addEventListener("DOMContentLoaded", () => {
             if (variety.is_default) continue;
 
             const formResponse = await fetch(variety.pokemon.url);
+            if (!formResponse.ok) {
+                console.error(`Erreur lors de la récupération des données de la forme: ${formResponse.status}`);
+                continue;
+            }
             const formData = await formResponse.json();
             const speciesResponse = await fetch(formData.species.url);
+            if (!speciesResponse.ok) {
+                console.error(`Erreur lors de la récupération des données de l'espèce: ${speciesResponse.status}`);
+                continue;
+            }
             const speciesData = await speciesResponse.json();
             const nameInFrench = speciesData.names.find(name => name.language.name === 'fr')?.name || formData.name;
 
@@ -294,6 +310,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function showPokemonLocations(pokemon) {
         const locationResponse = await fetch(pokemon.location_area_encounters);
+        if (!locationResponse.ok) {
+            console.error(`Erreur lors de la récupération des données de localisation: ${locationResponse.status}`);
+            return;
+        }
         const locations = await locationResponse.json();
 
         const locationHTML = locations.map(location => `<p>${location.location_area.name}</p>`).join('');
@@ -321,6 +341,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const fallbackSprite = pokemonData.sprites.other['official-artwork'].front_default;
 
             const speciesResponse = await fetch(pokemonData.species.url);
+            if (!speciesResponse.ok) {
+                console.error(`Erreur lors de la récupération des données de l'espèce: ${speciesResponse.status}`);
+                continue;
+            }
             const speciesData = await speciesResponse.json();
             const nameInFrench = speciesData.names.find(name => name.language.name === 'fr')?.name || pokemonName;
 
@@ -339,6 +363,10 @@ document.addEventListener("DOMContentLoaded", () => {
     async function renderAttacks(moves) {
         const attackNames = await Promise.all(moves.map(async (move) => {
             const moveResponse = await fetch(move.move.url);
+            if (!moveResponse.ok) {
+                console.error(`Erreur lors de la récupération des données de l'attaque: ${moveResponse.status}`);
+                return '';
+            }
             const moveData = await moveResponse.json();
             const nameInFrench = moveData.names.find(name => name.language.name === 'fr')?.name;
             return nameInFrench ? `<li>${nameInFrench}</li>` : '';
@@ -361,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function filterPokemon(pokemons, name, type, number, heightMin, heightMax, weightMin, weightMax) {
         if (!pokemons) return [];
         return pokemons.filter(pokemon => {
-            const matchesName = !name || pokemon.name.toLowerCase() === name.toLowerCase();
+            const matchesName = !name || pokemon.name.toLowerCase().includes(name.toLowerCase());
             const matchesType = type.length === 0 || pokemon.types.some(p => type.includes(p.type.name));
             const matchesNumber = number === '' || pokemon.id == number;
             const matchesHeight = pokemon.height / 10 >= heightMin && pokemon.height / 10 <= heightMax;
@@ -375,6 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const heightMax = searchHeightMax.value;
         document.getElementById('height-min-val').textContent = heightMin;
         document.getElementById('height-max-val').textContent = heightMax;
+        handleSearch();
     }
 
     function updateWeightOutput() {
@@ -382,21 +411,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const weightMax = searchWeightMax.value;
         document.getElementById('weight-min-val').textContent = weightMin;
         document.getElementById('weight-max-val').textContent = weightMax;
+        handleSearch();
     }
 
-    function updateFormWithPokemon(pokemon) {
-        searchGeneration.value = pokemon.generation;
-        const typeOptions = Array.from(searchType.options);
-        typeOptions.forEach(option => {
-            option.selected = pokemon.types.includes(option.value);
-        });
-        searchHeightMin.value = pokemon.heightMin;
-        searchHeightMax.value = pokemon.heightMax;
-        searchWeightMin.value = pokemon.weightMin;
-        searchWeightMax.value = pokemon.weightMax;
-        updateHeightOutput();
-        updateWeightOutput();
+    // Fonction de debounce pour limiter la fréquence d'exécution
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), wait);
+        };
     }
+
+    const debouncedHandleSearch = debounce(handleSearch, 300);
 
     async function handleSearch() {
         const name = searchName.value.toLowerCase();
@@ -459,18 +487,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function initializeEventListeners() {
-        searchName.addEventListener('input', handleSearch);
-        searchGeneration.addEventListener('change', handleSearch);
-        searchType.addEventListener('change', handleSearch);
-        searchNumber.addEventListener('input', handleSearch);
+        searchName.addEventListener('input', debouncedHandleSearch);
+        searchGeneration.addEventListener('change', debouncedHandleSearch);
+        searchType.addEventListener('change', debouncedHandleSearch);
+        searchNumber.addEventListener('input', debouncedHandleSearch);
         searchHeightMin.addEventListener('input', updateHeightOutput);
         searchHeightMax.addEventListener('input', updateHeightOutput);
         searchWeightMin.addEventListener('input', updateWeightOutput);
         searchWeightMax.addEventListener('input', updateWeightOutput);
-        searchHeightMin.addEventListener('input', handleSearch);
-        searchHeightMax.addEventListener('input', handleSearch);
-        searchWeightMin.addEventListener('input', handleSearch);
-        searchWeightMax.addEventListener('input', handleSearch);
+        searchHeightMin.addEventListener('input', debouncedHandleSearch);
+        searchHeightMax.addEventListener('input', debouncedHandleSearch);
+        searchWeightMin.addEventListener('input', debouncedHandleSearch);
+        searchWeightMax.addEventListener('input', debouncedHandleSearch);
 
         resetButton.addEventListener('click', () => {
             searchForm.reset();
