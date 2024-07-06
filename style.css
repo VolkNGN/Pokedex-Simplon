@@ -5,7 +5,7 @@ header {
     background-color: transparent;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 2;
-    position: relative; /* Assurer que le z-index prenne effet */
+    position: relative;
 }
 
 #header-image {
@@ -24,8 +24,8 @@ header {
     flex-direction: column;
     margin: 20px auto;
     text-align: center;
-    z-index: 2; /* Assurer que le conteneur principal est devant les Pokéballs */
-    position: relative; /* Assurer que le z-index prenne effet */
+    z-index: 2;
+    position: relative;
 }
 
 /* Styles pour le conteneur de recherche */
@@ -53,7 +53,7 @@ header {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 800px; /* Ajustez cette valeur selon vos besoins */
+    max-width: 800px;
 }
 
 #search-form div {
@@ -69,7 +69,9 @@ header {
     color: #555;
 }
 
-#search-form select, #search-form input[type="number"] {
+#search-form select, 
+#search-form input[type="number"], 
+#search-form input[type="range"] {
     padding: 10px;
     width: calc(100% - 20px);
     border: 1px solid #ccc;
@@ -78,14 +80,22 @@ header {
     transition: border-color 0.3s;
 }
 
-#search-form select:focus, #search-form input:focus {
+#search-form select:focus, 
+#search-form input:focus {
     border-color: #4caf50;
     outline: none;
 }
 
+/* Styles pour les sliders */
 .slider-container {
     margin: 20px 0;
     text-align: center;
+}
+
+.slider-values {
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 20px);
 }
 
 .slider-wrapper {
@@ -113,26 +123,8 @@ header {
     right: 0;
 }
 
-.slider-wrapper input[type="range"]::-webkit-slider-thumb {
-    pointer-events: all;
-    width: 20px;
-    height: 20px;
-    background: #4caf50;
-    border-radius: 50%;
-    cursor: pointer;
-    -webkit-appearance: none;
-}
-
-.slider-wrapper input[type="range"]::-moz-range-thumb {
-    pointer-events: all;
-    width: 20px;
-    height: 20px;
-    background: #4caf50;
-    border-radius: 50%;
-    cursor: pointer;
-    appearance: none;
-}
-
+.slider-wrapper input[type="range"]::-webkit-slider-thumb,
+.slider-wrapper input[type="range"]::-moz-range-thumb,
 .slider-wrapper input[type="range"]::-ms-thumb {
     pointer-events: all;
     width: 20px;
@@ -140,6 +132,7 @@ header {
     background: #4caf50;
     border-radius: 50%;
     cursor: pointer;
+    -webkit-appearance: none;
     appearance: none;
 }
 
@@ -160,12 +153,7 @@ header {
     margin-left: 5px;
 }
 
-.slider-values {
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 20px);
-}
-
+/* Styles pour les boutons */
 #search-form .button-group {
     display: flex;
     justify-content: center;
@@ -202,7 +190,7 @@ header {
     margin: 20px 0;
     text-align: center;
     width: 100%;
-    max-width: 800px; /* Ajustez cette valeur selon vos besoins */
+    max-width: 800px;
     font-size: 1em;
 }
 
@@ -211,63 +199,59 @@ header {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px; /* Augmenter l'espace entre les cartes */
-    z-index: 2; /* Assurer que le conteneur des cartes est devant les Pokéballs */
-    position: relative; /* Assurer que le z-index prenne effet */
-    visibility: visible; /* Assurer que le conteneur est visible */
+    gap: 20px;
+    z-index: 2;
+    position: relative;
+    visibility: visible;
 }
 
 /* Styles pour chaque carte Pokémon */
 .pokemon-card {
     background-color: #fff;
-    border-radius: 15px; /* Augmenter le rayon des bordures pour un effet plus doux */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Augmenter l'ombre pour plus de profondeur */
-    width: 250px; /* Augmenter la largeur des cartes */
-    padding: 20px; /* Augmenter le padding pour plus d'espace intérieur */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 250px;
+    padding: 20px;
     text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s; /* Rendre la transition plus fluide */
+    transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
     will-change: transform, box-shadow;
-    display: block; /* Assurer que les cartes sont affichées en bloc */
+    display: block;
 }
 
-/* Effet au survol pour chaque carte Pokémon */
 .pokemon-card:hover {
-    transform: scale(1.1); /* Augmenter légèrement l'effet de zoom au survol */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Renforcer l'ombre au survol */
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
 
-/* Styles pour les images des Pokémon */
 .pokemon-card img {
-    width: 100px; /* Augmenter la taille des images */
+    width: 100px;
     height: 100px;
 }
 
-/* Styles pour les noms des Pokémon */
 .pokemon-card h2 {
     margin: 15px 0;
-    font-size: 1.4em; /* Augmenter la taille de la police */
+    font-size: 1.4em;
     color: #333;
 }
 
-/* Styles pour le numéro du Pokémon */
 .pokemon-number {
     position: absolute;
-    top: 15px; /* Ajuster la position du numéro */
+    top: 15px;
     left: 15px;
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 5px 10px;
-    border-radius: 8px; /* Augmenter le rayon des bordures */
-    font-size: 1.1em; /* Augmenter la taille de la police */
+    border-radius: 8px;
+    font-size: 1.1em;
 }
 
 /* Styles pour la modale */
 .modal {
     display: none;
     position: fixed;
-    z-index: 3; /* Assurer que la modale est devant les autres éléments */
+    z-index: 3;
     left: 0;
     top: 0;
     width: 100%;
@@ -353,7 +337,6 @@ header {
 }
 
 .sidebar ul li a:hover {
-    text-decoration: none;
     background-color: #007bff;
     color: #fff;
 }
@@ -369,8 +352,8 @@ header {
 }
 
 @keyframes fadeEffect {
-    from {opacity: 0;}
-    to {opacity: 1;}
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .tabcontent h3 {
@@ -387,13 +370,14 @@ header {
     object-fit: cover;
 }
 
+/* Styles pour le corps et l'animation de fond */
 body, html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Permettre le défilement */
-    background-color: black; /* Fond noir pour l'animation */
+    overflow: auto;
+    background-color: black;
 }
 
 #pokeball-animation-container {
@@ -403,14 +387,14 @@ body, html {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 1; /* Assurer que les Pokéballs sont en arrière-plan mais devant le fond noir */
+    z-index: 1;
 }
 
 .pokeball {
-    position: absolute; /* ou relative selon votre besoin */
-    width: 50px; /* Ajustez selon vos besoins */
-    height: 50px; /* Ajustez selon vos besoins */
-    background-image: url('/Pokedex/pokeball.png'); /* Remplacez par l'image de votre Pokéball */
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-image: url('/Pokedex/pokeball.png');
     background-size: cover;
     animation-name: move;
     animation-timing-function: linear;
@@ -422,6 +406,6 @@ body, html {
         top: 0;
     }
     to {
-        top: 100vh; /* Déplace la Pokéball en bas de l'écran */
+        top: 100vh;
     }
 }

@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedex</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Swiper JS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 </head>
 <body>
     <!-- Conteneur pour l'animation des Pokéballs -->
     <div id="pokeball-animation-container"></div>
+    
     <!-- Image du Pokédex en tant que header -->
     <header>
         <img src="/Pokedex/Pokedex logo.png" alt="Pokédex" id="header-image">
     </header>
+    
     <!-- Conteneur principal de l'application -->
     <div id="app">
         <!-- Formulaire de recherche -->
@@ -22,12 +23,12 @@
             <div id="search-container">
                 <h2>Recherche avancée</h2>
                 <label for="search-name">Nom</label>
-                <input type="text" id="search-name" placeholder="Nom du Pokémon">
+                <input type="text" id="search-name" name="search-name" placeholder="Nom du Pokémon">
             </div>
             <div>
                 <label for="search-generation">Génération</label>
-                <select id="search-generation">
-                    <option value="">choisir une génération</option>
+                <select id="search-generation" name="search-generation">
+                    <option value="">Choisir une génération</option>
                     <option value="1">Génération 1</option>
                     <option value="2">Génération 2</option>
                     <option value="3">Génération 3</option>
@@ -40,7 +41,7 @@
             </div>
             <div>
                 <label for="search-type">Types</label>
-                <select id="search-type" multiple>
+                <select id="search-type" name="search-type" multiple>
                     <option value="normal">Normal</option>
                     <option value="fighting">Combat</option>
                     <option value="flying">Vol</option>
@@ -63,13 +64,13 @@
             </div>
             <div>
                 <label for="search-number">Numéro du Pokédex</label>
-                <input type="number" id="search-number" min="1" placeholder="Numéro du Pokédex">
+                <input type="number" id="search-number" name="search-number" min="1" placeholder="Numéro du Pokédex">
             </div>
             <div>
                 <label for="search-height">Taille (m)</label>
                 <div class="slider-container">
-                    <input type="range" id="search-height-min" min="0" max="20" step="0.1" value="0">
-                    <input type="range" id="search-height-max" min="0" max="20" step="0.1" value="20">
+                    <input type="range" id="search-height-min" name="search-height-min" min="0" max="20" step="0.1" value="0">
+                    <input type="range" id="search-height-max" name="search-height-max" min="0" max="20" step="0.1" value="20">
                 </div>
                 <div class="slider-values">
                     <span id="height-min-val">0</span> - <span id="height-max-val">20</span> m
@@ -78,8 +79,8 @@
             <div>
                 <label for="search-weight">Poids (kg)</label>
                 <div class="slider-container">
-                    <input type="range" id="search-weight-min" min="0" max="1000" step="10" value="0">
-                    <input type="range" id="search-weight-max" min="0" max="1000" step="10" value="1000">
+                    <input type="range" id="search-weight-min" name="search-weight-min" min="0" max="1000" step="10" value="0">
+                    <input type="range" id="search-weight-max" name="search-weight-max" min="0" max="1000" step="10" value="1000">
                 </div>
                 <div class="slider-values">
                     <span id="weight-min-val">0</span> - <span id="weight-max-val">1000</span> kg
@@ -89,13 +90,17 @@
                 <button type="button" id="reset-button">Réinitialiser</button>
             </div>
         </form>
+        
         <!-- Conteneur des critères sélectionnés -->
         <div id="selected-criteria"></div>
+        
         <!-- Message aucun résultat -->
         <div id="no-results-message" style="display:none;">Aucun résultat trouvé pour votre recherche.</div>
+        
         <!-- Conteneur des cartes Pokémon -->
         <div id="pokedex" class="pokedex"></div>
     </div>
+    
     <!-- Modale pour les détails du Pokémon -->
     <div id="pokemon-modal" class="modal">
         <div class="modal-content">
@@ -122,8 +127,9 @@
             </div>
         </div>
     </div>
+    
+    <!-- Scripts -->
     <script src="script.js"></script>
-    <!-- Swiper JS -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </body>
 </html>
