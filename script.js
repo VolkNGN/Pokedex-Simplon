@@ -133,9 +133,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 `linear-gradient(45deg, ${primaryTypeColor} 50%, ${secondaryTypeColor} 50%)` :
                 primaryTypeColor;
 
-            const animatedSprite = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
-            const staticSprite = pokemon.sprites.front_default;
-            const spriteToUse = animatedSprite || staticSprite;
+            let spriteToUse;
+            if (pokemon.id <= 649) { // Pokémon jusqu'à la génération 5
+                const animatedSprite = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
+                const staticSprite = pokemon.sprites.front_default;
+                spriteToUse = animatedSprite || staticSprite;
+            } else { // Pokémon à partir de la génération 6
+                spriteToUse = `https://play.pokemonshowdown.com/sprites/xyani/${pokemon.name}.gif`;
+            }
 
             pokemonCard.innerHTML = `
                 <div class="pokemon-number">#${pokemon.id}</div>
@@ -167,9 +172,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const typeInFrench = pokemon.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
 
-            const animatedSprite = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
-            const staticSprite = pokemon.sprites.front_default;
-            const spriteToUse = animatedSprite || staticSprite;
+            let spriteToUse;
+            if (pokemon.id <= 649) { // Pokémon jusqu'à la génération 5
+                const animatedSprite = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
+                const staticSprite = pokemon.sprites.front_default;
+                spriteToUse = animatedSprite || staticSprite;
+            } else { // Pokémon à partir de la génération 6
+                spriteToUse = `https://play.pokemonshowdown.com/sprites/xyani/${pokemon.name}.gif`;
+            }
 
             document.getElementById('Informations').innerHTML = `
                 <h2>${nameInFrench}</h2>
@@ -210,6 +220,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p>${speciesData.flavor_text_entries.find(entry => entry.language.name === 'fr')?.flavor_text || 'Description non disponible en français.'}</p>
             `;
 
+            document.getElementById('Cri').innerHTML = `
+                <h3>Cri</h3>
+                ${await fetchPokemonCry(pokemon)}
+            `;
+
             modal.style.display = "block";
             openTab(null, 'Informations');
         } catch (error) {
@@ -233,7 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const speciesData = await speciesResponse.json();
             const nameInFrench = speciesData.names.find(name => name.language.name === 'fr')?.name || formData.name;
 
-            // Vérifier si form_names existe et a au moins un élément
             let formNameInFrench = '';
             if (formData.form_names && formData.form_names.length > 0) {
                 formNameInFrench = formData.form_names.find(name => name.language.name === 'fr')?.name;
@@ -242,14 +256,19 @@ document.addEventListener("DOMContentLoaded", () => {
             if (formNameInFrench) {
                 formNameInFrench = `${nameInFrench} ${formNameInFrench}`;
             } else {
-                formNameInFrench = nameInFrench; // Utiliser le nom par défaut si le nom de la forme n'est pas disponible
+                formNameInFrench = nameInFrench;
             }
 
             const typeInFrench = formData.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
 
-            const animatedSprite = formData.sprites.versions['generation-v']['black-white'].animated.front_default;
-            const staticSprite = formData.sprites.front_default;
-            const spriteToUse = animatedSprite || staticSprite;
+            let spriteToUse;
+            if (formData.id <= 649) {
+                const animatedSprite = formData.sprites.versions['generation-v']['black-white'].animated.front_default;
+                const staticSprite = formData.sprites.front_default;
+                spriteToUse = animatedSprite || staticSprite;
+            } else {
+                spriteToUse = `https://play.pokemonshowdown.com/sprites/xyani/${formData.name}.gif`;
+            }
 
             formsHTML += `
                 <div class="pokemon-form">
@@ -290,9 +309,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const item = currentChain.evolution_details[0]?.item?.name ? ` (Objet: ${currentChain.evolution_details[0].item.name})` : '';
             const pokemonData = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`).then(res => res.json());
 
-            const animatedSprite = pokemonData.sprites.versions['generation-v']['black-white'].animated.front_default;
-            const staticSprite = pokemonData.sprites.front_default;
-            const spriteToUse = animatedSprite || staticSprite;
+            let spriteToUse;
+            if (pokemonData.id <= 649) {
+                const animatedSprite = pokemonData.sprites.versions['generation-v']['black-white'].animated.front_default;
+                const staticSprite = pokemonData.sprites.front_default;
+                spriteToUse = animatedSprite || staticSprite;
+            } else {
+                spriteToUse = `https://play.pokemonshowdown.com/sprites/xyani/${pokemonName}.gif`;
+            }
 
             const speciesResponse = await fetch(pokemonData.species.url);
             const speciesData = await speciesResponse.json();
@@ -318,6 +342,18 @@ document.addEventListener("DOMContentLoaded", () => {
             return nameInFrench ? `<li>${nameInFrench}</li>` : '';
         }));
         return attackNames.join('');
+    }
+
+    async function fetchPokemonCry(pokemon) {
+        let cryUrl;
+
+        if (pokemon.id <= 649) { // Jusqu'à la génération 5
+            cryUrl = `https://pokemoncries.com/cries-old/${pokemon.id}.mp3`;
+        } else { // Générations 6 à 8
+            cryUrl = `https://play.pokemonshowdown.com/audio/cries/${pokemon.name.toLowerCase()}.mp3`;
+        }
+
+        return `<audio controls><source src="${cryUrl}" type="audio/mpeg">Votre navigateur ne supporte pas l'élément audio.</audio>`;
     }
 
     function filterPokemon(pokemons, name, type, number, heightMin, heightMax, weightMin, weightMax) {

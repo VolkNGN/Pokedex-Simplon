@@ -370,6 +370,12 @@ header {
     object-fit: cover;
 }
 
+/* Styles pour le cri */
+#Cri audio {
+    margin-top: 10px;
+    width: 100%;
+}
+
 /* Styles pour le corps et l'animation de fond */
 body, html {
     margin: 0;
