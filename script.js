@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let allPokemonData = [];
     const displayedPokemonIds = new Set();
 
+    // Couleurs des types de Pokémon
     const typeColors = {
         normal: '#A8A77A',
         fire: '#EE8130',
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fairy: '#D685AD'
     };
 
+    // Traduction des types de Pokémon en français
     const typeTranslation = {
         normal: 'Normal',
         fighting: 'Combat',
@@ -60,8 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
         fairy: 'Fée'
     };
 
+    // Masquer le Pokédex par défaut
     pokedex.style.display = 'none';
 
+    // Fonction pour récupérer les données Pokémon par génération
     async function fetchPokemonDataByGeneration(generationId) {
         try {
             const response = await fetch(`https://pokeapi.co/api/v2/generation/${generationId}`);
@@ -83,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Limiter les requêtes simultanées
     async function rateLimitRequests(promises, limit) {
         const results = [];
         const executing = [];
@@ -102,10 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return Promise.all(results);
     }
 
+    // Trier les Pokémon par numéro
     function sortPokemonByNumber(pokemons) {
         return pokemons.sort((a, b) => a.id - b.id);
     }
 
+    // Récupérer l'image du Pokémon
     function getPokemonImage(pokemon) {
         const animatedSpritePokeAPI = pokemon.sprites.versions['generation-v']['black-white'].animated.front_default;
         const staticSpritePokeAPI = pokemon.sprites.other['official-artwork'].front_default;
@@ -120,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return null;
     }
 
+    // Gérer les erreurs de chargement d'image
     function handleImageError(event) {
         const fallbackImage = event.target.dataset.fallback;
         if (fallbackImage) {
@@ -127,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Afficher les Pokémon sur la page
     async function displayPokemon(pokemons, reset = false) {
         if (reset) {
             pokedex.innerHTML = '';
@@ -179,12 +188,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             pokedex.appendChild(pokemonCard);
 
+            // Ajouter un gestionnaire d'événements pour afficher les détails du Pokémon au clic
             pokemonCard.addEventListener('click', () => {
                 showPokemonDetails(pokemon, nameInFrench);
             });
         }
     }
 
+    // Afficher les détails du Pokémon dans un modal
     async function showPokemonDetails(pokemon, nameInFrench) {
         try {
             const speciesResponse = await fetch(pokemon.species.url);
@@ -192,11 +203,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(`Erreur HTTP! Statut: ${speciesResponse.status}`);
             }
             const speciesData = await speciesResponse.json();
+            
+            if (!speciesData.evolution_chain || !speciesData.evolution_chain.url) {
+                console.warn('Pas de chaîne d\'évolution pour ce Pokémon');
+                return;
+            }
+            
+            console.log('Evolution chain URL:', speciesData.evolution_chain.url);
+            
             const evolutionResponse = await fetch(speciesData.evolution_chain.url);
             if (!evolutionResponse.ok) {
                 throw new Error(`Erreur HTTP! Statut: ${evolutionResponse.status}`);
             }
             const evolutionData = await evolutionResponse.json();
+            console.log('Evolution data:', evolutionData);
 
             const typeInFrench = pokemon.types.map(typeInfo => typeTranslation[typeInfo.type.name]).join(', ');
 
@@ -254,6 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Récupérer les formes alternatives du Pokémon
     async function fetchPokemonForms(varieties) {
         if (!varieties || varieties.length <= 1) {
             return "<p>Aucune forme alternative disponible.</p>";
@@ -308,6 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return formsHTML;
     }
 
+    // Afficher les lieux de rencontre du Pokémon
     async function showPokemonLocations(pokemon) {
         const locationResponse = await fetch(pokemon.location_area_encounters);
         if (!locationResponse.ok) {
@@ -324,6 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
+    // Rendre la chaîne d'évolution du Pokémon
     async function renderEvolutionChain(chain) {
         if (!chain) return "<p>Aucune information d'évolution disponible.</p>";
 
@@ -360,6 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return evolutionHTML;
     }
 
+    // Rendre les attaques du Pokémon
     async function renderAttacks(moves) {
         const attackNames = await Promise.all(moves.map(async (move) => {
             const moveResponse = await fetch(move.move.url);
@@ -374,6 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return attackNames.join('');
     }
 
+    // Récupérer le cri du Pokémon
     async function fetchPokemonCry(pokemon) {
         let cryUrl;
 
@@ -386,6 +411,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return `<audio controls><source src="${cryUrl}" type="audio/mpeg">Votre navigateur ne supporte pas l'élément audio.</audio>`;
     }
 
+    // Filtrer les Pokémon en fonction des critères de recherche
     function filterPokemon(pokemons, name, type, number, heightMin, heightMax, weightMin, weightMax) {
         if (!pokemons) return [];
         return pokemons.filter(pokemon => {
@@ -398,6 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Mettre à jour l'affichage des valeurs de hauteur
     function updateHeightOutput() {
         const heightMin = searchHeightMin.value;
         const heightMax = searchHeightMax.value;
@@ -406,6 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
         handleSearch();
     }
 
+    // Mettre à jour l'affichage des valeurs de poids
     function updateWeightOutput() {
         const weightMin = searchWeightMin.value;
         const weightMax = searchWeightMax.value;
@@ -414,7 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
         handleSearch();
     }
 
-    // Fonction de debounce pour limiter la fréquence d'exécution
+    // Fonction de debounce pour limiter la fréquence d'exécution des recherches
     function debounce(func, wait) {
         let timeout;
         return function() {
@@ -426,6 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const debouncedHandleSearch = debounce(handleSearch, 300);
 
+    // Gérer les recherches des Pokémon
     async function handleSearch() {
         const name = searchName.value.toLowerCase();
         const generationId = searchGeneration.value;
@@ -467,6 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Récupérer les données Pokémon par nom
     async function fetchPokemonDataByName(name) {
         try {
             const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
@@ -486,6 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Initialiser les gestionnaires d'événements
     function initializeEventListeners() {
         searchName.addEventListener('input', debouncedHandleSearch);
         searchGeneration.addEventListener('change', debouncedHandleSearch);
@@ -525,6 +556,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Créer une animation de Pokéball
     function createPokeball() {
         const pokeball = document.createElement('div');
         pokeball.classList.add('pokeball');
@@ -549,6 +581,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Ouvrir un onglet spécifique
     function openTab(evt, tabName) {
         let i, tabcontent, tablinks;
 
@@ -568,8 +601,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Lancer une Pokéball toutes les 250 ms
     setInterval(createPokeball, 250);
 
+    // Initialiser les gestionnaires d'événements
     initializeEventListeners();
 });
 
