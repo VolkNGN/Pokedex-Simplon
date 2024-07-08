@@ -51,3 +51,4 @@ Cette application Pokédex permet aux utilisateurs de rechercher des Pokémon se
 - optimisation traduction française
 - correction slidebarpoids et taille à optimiser.
 - certaines modales n'apparaissent pas en cliquant sur la carte, investigations en cours.
+- modifications police d'écriture
