@@ -44,7 +44,6 @@ Cette application Pokédex permet aux utilisateurs de rechercher des Pokémon se
 - **CSS** : Utilisé pour styliser et mettre en page l'application, rendant l'interface utilisateur attrayante et réactive.
 - **JavaScript** : Utilisé pour ajouter des fonctionnalités dynamiques et interactives, telles que la recherche et le filtrage des Pokémon, et la gestion des événements utilisateur.
 - **PokeAPI** : Une API externe utilisée pour récupérer les données détaillées des Pokémon, y compris les informations de base, les types, les statistiques, et plus encore.
-- **Swiper** : Une bibliothèque utilisée pour créer des carrousels et des éléments interactifs dans l'application.
 
 ## reste à faire
 - amélioration fluidité formulaire de recherche avancé pour recherche dynamique
